@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 
 class AppShadows {
-  static List<BoxShadow> soft = [
-    BoxShadow(
-      color: Colors.black.withValues(alpha: 0.05),
-      blurRadius: 18,
-      offset: const Offset(0, 6),
-    ),
-  ];
+  // ZionChat deliberately avoids elevation: separation comes from tone,
+  // spacing and oversized corner radii instead of drop shadows.
+  static const List<BoxShadow> soft = <BoxShadow>[];
 }
 
 /// Shared desktop popover wash. Alpha is unchanged from the previous
@@ -25,7 +21,11 @@ class AppOverlayColors {
 }
 
 class AppRadii {
-  static const double capsule = 28;
+  static const double compact = 18;
+  static const double control = 24;
+  static const double surface = 28;
+  static const double card = 32;
+  static const double capsule = 999;
 }
 
 class AppSpacing {

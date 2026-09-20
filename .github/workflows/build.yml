@@ -116,7 +116,7 @@ jobs:
           cd build/app/outputs/flutter-apk
           for file in app-*-release.apk; do
             abi=$(echo "$file" | sed -E 's/app-(.*)-release\.apk/\1/')
-            mv "$file" "Kelivo_android_${VERSION}_${abi}.apk"
+            mv "$file" "ZionChat_android_${VERSION}_${abi}.apk"
           done
 
       - name: 🚀 发布到 Release
@@ -125,25 +125,25 @@ jobs:
         with:
           tag_name: ${{ github.event.inputs.release_tag }}
           name: ${{ github.event.inputs.release_tag }}
-          files: build/app/outputs/flutter-apk/Kelivo_android_*.apk
+          files: build/app/outputs/flutter-apk/ZionChat_android_*.apk
 
       - name: 📤 上传构建产物 (arm64-v8a)
         uses: actions/upload-artifact@v4
         with:
           name: Android-arm64-v8a
-          path: build/app/outputs/flutter-apk/Kelivo_android_*_arm64-v8a.apk
+          path: build/app/outputs/flutter-apk/ZionChat_android_*_arm64-v8a.apk
 
       - name: 📤 上传构建产物 (armeabi-v7a)
         uses: actions/upload-artifact@v4
         with:
           name: Android-armeabi-v7a
-          path: build/app/outputs/flutter-apk/Kelivo_android_*_armeabi-v7a.apk
+          path: build/app/outputs/flutter-apk/ZionChat_android_*_armeabi-v7a.apk
 
       - name: 📤 上传构建产物 (x86_64)
         uses: actions/upload-artifact@v4
         with:
           name: Android-x86_64
-          path: build/app/outputs/flutter-apk/Kelivo_android_*_x86_64.apk
+          path: build/app/outputs/flutter-apk/ZionChat_android_*_x86_64.apk
 
   # iOS 构建
   ios:
@@ -199,7 +199,7 @@ jobs:
           cd build/ios/iphoneos
           mkdir Payload
           cp -r Runner.app Payload/
-          zip -r ../../../Kelivo_ios_${VERSION}.ipa Payload
+          zip -r ../../../ZionChat_ios_${VERSION}.ipa Payload
 
       - name: 🚀 发布到 Release
         if: ${{ github.event.inputs.publish_release == 'true' && github.event.inputs.release_tag != '' }}
@@ -207,13 +207,13 @@ jobs:
         with:
           tag_name: ${{ github.event.inputs.release_tag }}
           name: ${{ github.event.inputs.release_tag }}
-          files: Kelivo_ios_*.ipa
+          files: ZionChat_ios_*.ipa
 
       - name: 📤 上传构建产物
         uses: actions/upload-artifact@v4
         with:
           name: iOS-IPA
-          path: Kelivo_ios_*.ipa
+          path: ZionChat_ios_*.ipa
 
   # macOS 构建
   macos:
@@ -254,16 +254,16 @@ jobs:
         run: |
           brew install create-dmg
           create-dmg \
-            --volname "Kelivo" \
+            --volname "ZionChat" \
             --window-pos 200 120 \
             --window-size 800 400 \
             --icon-size 100 \
             --app-drop-link 600 185 \
-            "Kelivo_macos_${VERSION}.dmg" \
+            "ZionChat_macos_${VERSION}.dmg" \
             "build/macos/Build/Products/Release/kelivo.app" || true
           # 如果 create-dmg 失败，使用简单方式
-          if [ ! -f "Kelivo_macos_${VERSION}.dmg" ]; then
-            hdiutil create -volname Kelivo -srcfolder build/macos/Build/Products/Release/kelivo.app -ov -format UDZO Kelivo_macos_${VERSION}.dmg
+          if [ ! -f "ZionChat_macos_${VERSION}.dmg" ]; then
+            hdiutil create -volname ZionChat -srcfolder build/macos/Build/Products/Release/kelivo.app -ov -format UDZO ZionChat_macos_${VERSION}.dmg
           fi
 
       - name: 🚀 发布到 Release
@@ -272,13 +272,13 @@ jobs:
         with:
           tag_name: ${{ github.event.inputs.release_tag }}
           name: ${{ github.event.inputs.release_tag }}
-          files: Kelivo_macos_*.dmg
+          files: ZionChat_macos_*.dmg
 
       - name: 📤 上传构建产物
         uses: actions/upload-artifact@v4
         with:
           name: macOS-DMG
-          path: Kelivo_macos_*.dmg
+          path: ZionChat_macos_*.dmg
 
   # Windows 构建
   windows:
@@ -334,7 +334,7 @@ jobs:
       - name: 📦 打包 ZIP
         shell: pwsh
         run: |
-          Compress-Archive -Path "build/windows/x64/runner/Release/*" -DestinationPath "Kelivo_windows_$env:VERSION.zip"
+          Compress-Archive -Path "build/windows/x64/runner/Release/*" -DestinationPath "ZionChat_windows_$env:VERSION.zip"
 
       - name: 🔧 安装 Inno Setup
         run: choco install innosetup -y
@@ -384,7 +384,7 @@ jobs:
 
           # 创建 Inno Setup 脚本
           $issContent = @"
-          #define MyAppName "Kelivo"
+          #define MyAppName "ZionChat"
           #define MyAppVersion "$env:VERSION"
           #define MyAppPublisher "Psyche"
           #define MyAppExeName "kelivo.exe"
@@ -397,7 +397,7 @@ jobs:
           DefaultDirName={autopf}\{#MyAppName}
           DefaultGroupName={#MyAppName}
           OutputDir=.
-          OutputBaseFilename=Kelivo_windows_{#MyAppVersion}_setup
+          OutputBaseFilename=ZionChat_windows_{#MyAppVersion}_setup
           Compression=lzma2
           SolidCompression=yes
           WizardStyle=modern
@@ -435,20 +435,20 @@ jobs:
           tag_name: ${{ github.event.inputs.release_tag }}
           name: ${{ github.event.inputs.release_tag }}
           files: |
-            Kelivo_windows_*.zip
-            Kelivo_windows_*_setup.exe
+            ZionChat_windows_*.zip
+            ZionChat_windows_*_setup.exe
 
       - name: 📤 上传构建产物 (ZIP)
         uses: actions/upload-artifact@v4
         with:
           name: Windows-ZIP
-          path: Kelivo_windows_*.zip
+          path: ZionChat_windows_*.zip
 
       - name: 📤 上传构建产物 (Installer)
         uses: actions/upload-artifact@v4
         with:
           name: Windows-Installer
-          path: Kelivo_windows_*_setup.exe
+          path: ZionChat_windows_*_setup.exe
 
   # Linux 构建
   linux:
@@ -499,7 +499,7 @@ jobs:
       - name: 📦 打包 tar.gz
         run: |
           cd build/linux/x64/release/bundle
-          tar -czf ../../../../../Kelivo_linux_${VERSION}.tar.gz .
+          tar -czf ../../../../../ZionChat_linux_${VERSION}.tar.gz .
 
       - name: 📦 创建 AppImage
         run: |
@@ -527,7 +527,7 @@ jobs:
           # 创建 desktop 文件
           cat > AppDir/kelivo.desktop << EOF
           [Desktop Entry]
-          Name=Kelivo
+          Name=ZionChat
           Exec=kelivo
           Icon=kelivo
           Type=Application
@@ -546,7 +546,7 @@ jobs:
           install -Dm644 "$ICON_SOURCE" "AppDir/usr/share/icons/hicolor/256x256/apps/kelivo.png"
           
           # 构建 AppImage
-          ARCH=x86_64 ./appimagetool AppDir Kelivo_linux_${VERSION}.AppImage
+          ARCH=x86_64 ./appimagetool AppDir ZionChat_linux_${VERSION}.AppImage
 
       - name: 📦 创建 DEB 包
         run: |
@@ -572,14 +572,14 @@ jobs:
           Architecture: amd64
           Maintainer: Psyche <your@email.com>
           Depends: libgtk-3-0, libstdc++6, libglu1-mesa, libgstreamer1.0-0, libgstreamer-plugins-base1.0-0, libglib2.0-0, libc6
-          Description: Kelivo Application
+          Description: ZionChat Application
            A Flutter application for Linux
           EOF
           
           # 创建 desktop 文件
           cat > deb/usr/share/applications/kelivo.desktop << EOF
           [Desktop Entry]
-          Name=Kelivo
+          Name=ZionChat
           Exec=/opt/kelivo/kelivo
           Icon=kelivo
           Type=Application
@@ -605,7 +605,7 @@ jobs:
           chmod +x deb/opt/kelivo/kelivo.sh
           
           # 构建 DEB 包
-          dpkg-deb --build deb Kelivo_linux_${VERSION}_amd64.deb
+          dpkg-deb --build deb ZionChat_linux_${VERSION}_amd64.deb
       - name: 📦 创建 RPM 包
         run: |
           # 创建 RPM 构建目录
@@ -630,7 +630,7 @@ jobs:
           Name:           kelivo
           Version:        ${VERSION_NUMBER}
           Release:        1%{?dist}
-          Summary:        Kelivo Application
+          Summary:        ZionChat Application
           License:        MIT
           Source0:        %{name}-%{version}.tar.gz
           BuildArch:      x86_64
@@ -652,7 +652,7 @@ jobs:
           mkdir -p %{buildroot}/usr/share/applications
           cat > %{buildroot}/usr/share/applications/kelivo.desktop << 'DESKTOPEOF'
           [Desktop Entry]
-          Name=Kelivo
+          Name=ZionChat
           Exec=/opt/kelivo/kelivo
           Icon=kelivo
           Type=Application
@@ -675,12 +675,12 @@ jobs:
           
           # 构建 RPM
           rpmbuild -bb ~/rpmbuild/SPECS/kelivo.spec
-          cp ~/rpmbuild/RPMS/x86_64/kelivo-${VERSION_NUMBER}-1.*.rpm Kelivo_linux_${VERSION}.rpm
+          cp ~/rpmbuild/RPMS/x86_64/kelivo-${VERSION_NUMBER}-1.*.rpm ZionChat_linux_${VERSION}.rpm
       - name: 🔍 RPM 元数据（调试）
         shell: bash
         run: |
           set -euxo pipefail
-          RPM_FILE="Kelivo_linux_${VERSION}.rpm"
+          RPM_FILE="ZionChat_linux_${VERSION}.rpm"
           echo "RPM file: ${RPM_FILE}"
           cp -f ~/rpmbuild/SPECS/kelivo.spec rpm-spec.spec
           rpm -qp --info "${RPM_FILE}" | tee rpm-info.txt
@@ -699,7 +699,7 @@ jobs:
         shell: bash
         run: |
           set -euxo pipefail
-          RPM_FILE="Kelivo_linux_${VERSION}.rpm"
+          RPM_FILE="ZionChat_linux_${VERSION}.rpm"
           docker run --rm -v "${PWD}:/work" -w /work fedora:43 bash -lc "dnf -y install ./${RPM_FILE}"
       - name: 🚀 发布到 Release
         if: ${{ github.event.inputs.publish_release == 'true' && github.event.inputs.release_tag != '' }}
@@ -709,30 +709,30 @@ jobs:
           name: ${{ github.event.inputs.release_tag }}
           prerelease: ${{ github.event.inputs.prerelease }}
           files: |
-            Kelivo_linux_*.tar.gz
-            Kelivo_linux_*.AppImage
-            Kelivo_linux_*_amd64.deb
-            Kelivo_linux_*.rpm
+            ZionChat_linux_*.tar.gz
+            ZionChat_linux_*.AppImage
+            ZionChat_linux_*_amd64.deb
+            ZionChat_linux_*.rpm
       - name: 📤 上传构建产物 (tar.gz)
         uses: actions/upload-artifact@v4
         with:
           name: Linux-tar.gz
-          path: Kelivo_linux_*.tar.gz
+          path: ZionChat_linux_*.tar.gz
 
       - name: 📤 上传构建产物 (AppImage)
         uses: actions/upload-artifact@v4
         with:
           name: Linux-AppImage
-          path: Kelivo_linux_*.AppImage
+          path: ZionChat_linux_*.AppImage
 
       - name: 📤 上传构建产物 (DEB)
         uses: actions/upload-artifact@v4
         with:
           name: Linux-DEB
-          path: Kelivo_linux_*_amd64.deb
+          path: ZionChat_linux_*_amd64.deb
 
       - name: 📤 上传构建产物 (RPM)
         uses: actions/upload-artifact@v4
         with:
           name: Linux-RPM
-          path: Kelivo_linux_*.rpm
+          path: ZionChat_linux_*.rpm

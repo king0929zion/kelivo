@@ -2425,15 +2425,13 @@ class _ChatMessageWidgetState extends State<ChatMessageWidget> {
   }) {
     final cs = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    BorderRadius radius = BorderRadius.circular(16);
+    final radius = BorderRadius.circular(26);
     return buildSharedChatSurface(
       context,
       borderRadius: radius,
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 11),
       defaultColor: isUser
-          ? (isDark
-                ? cs.primary.withValues(alpha: 0.15)
-                : cs.primary.withValues(alpha: 0.08))
+          ? cs.onSurface.withValues(alpha: isDark ? 0.12 : 0.055)
           : null,
       bareOnDefault: !isUser,
       isUser: isUser,

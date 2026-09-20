@@ -72,7 +72,11 @@ ColorScheme _withDerivedSurfaceContainers(
 }
 
 DialogThemeData _dialogTheme(AppSemanticColors colors, ColorScheme scheme) {
-  return DialogThemeData(backgroundColor: colors.overlaySurface(scheme));
+  return DialogThemeData(
+    backgroundColor: colors.overlaySurface(scheme),
+    elevation: 0,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+  );
 }
 
 BottomSheetThemeData _bottomSheetTheme(
@@ -82,6 +86,10 @@ BottomSheetThemeData _bottomSheetTheme(
   return BottomSheetThemeData(
     backgroundColor: colors.overlaySurface(scheme),
     surfaceTintColor: Colors.transparent,
+    elevation: 0,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+    ),
   );
 }
 
@@ -89,7 +97,11 @@ PopupMenuThemeData _popupMenuTheme(
   AppSemanticColors colors,
   ColorScheme scheme,
 ) {
-  return PopupMenuThemeData(color: colors.overlaySurface(scheme));
+  return PopupMenuThemeData(
+    color: colors.overlaySurface(scheme),
+    elevation: 0,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
+  );
 }
 
 TextTheme _withFontFallback(TextTheme base, List<String> fallback) {
@@ -248,7 +260,7 @@ ThemeData buildLightTheme(ColorScheme? dynamicScheme) {
       surfaceTintColor: scheme.surface,
       elevation: 0,
       scrolledUnderElevation: 0,
-      centerTitle: false,
+      centerTitle: true,
       foregroundColor: scheme.onSurface,
       titleTextStyle: TextStyle(
         color: scheme.onSurface,
@@ -325,7 +337,7 @@ ThemeData buildLightThemeForScheme(
       surfaceTintColor: scheme.surface,
       elevation: 0,
       scrolledUnderElevation: 0,
-      centerTitle: false,
+      centerTitle: true,
       foregroundColor: scheme.onSurface,
       titleTextStyle: TextStyle(
         color: scheme.onSurface,
@@ -416,7 +428,7 @@ ThemeData buildDarkTheme(ColorScheme? dynamicScheme) {
       surfaceTintColor: scheme.surface,
       elevation: 0,
       scrolledUnderElevation: 0,
-      centerTitle: false,
+      centerTitle: true,
       foregroundColor: scheme.onSurface,
       titleTextStyle: TextStyle(
         color: scheme.onSurface,
@@ -486,7 +498,7 @@ ThemeData buildDarkThemeForScheme(
       surfaceTintColor: scheme.surface,
       elevation: 0,
       scrolledUnderElevation: 0,
-      centerTitle: false,
+      centerTitle: true,
       foregroundColor: scheme.onSurface,
       titleTextStyle: TextStyle(
         color: scheme.onSurface,

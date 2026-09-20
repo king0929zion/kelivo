@@ -103,31 +103,110 @@ class SettingsPage extends StatelessWidget {
       }
     }
 
-    // iOS-style section header (neutral color, not theme color)
+    // Quiet uppercase labels + large tonal groups mirror the ZionChat visual
+    // language while keeping the existing settings information architecture.
     Widget header(String text, {bool first = false}) => Padding(
-      padding: EdgeInsets.fromLTRB(12, first ? 2 : 12, 12, 6),
+      padding: EdgeInsets.fromLTRB(20, first ? 8 : 18, 20, 8),
       child: Text(
-        text,
+        text.toUpperCase(),
         style: TextStyle(
-          fontSize: 13,
+          fontSize: 12,
+          letterSpacing: 0.2,
           fontWeight: AppFontWeights.semibold,
-          color: cs.onSurface.withValues(alpha: 0.8),
+          color: cs.onSurface.withValues(alpha: 0.52),
         ),
+      ),
+    );
+
+    Widget profileHeader() => Padding(
+      padding: const EdgeInsets.fromLTRB(20, 18, 20, 26),
+      child: Column(
+        children: [
+          Container(
+            width: 96,
+            height: 96,
+            decoration: BoxDecoration(
+              color: context.appColors.surfaceFill,
+              shape: BoxShape.circle,
+            ),
+            padding: const EdgeInsets.all(9),
+            child: ClipOval(
+              child: Image.asset(
+                'assets/app_icon.png',
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) =>
+                    Icon(Lucide.MessageCircle, size: 42, color: cs.onSurface),
+              ),
+            ),
+          ),
+          const SizedBox(height: 18),
+          Text(
+            'ZionChat',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 30,
+              height: 1.1,
+              fontWeight: AppFontWeights.semibold,
+              color: cs.onSurface,
+            ),
+          ),
+          const SizedBox(height: 14),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 11),
+            decoration: BoxDecoration(
+              color: context.appColors.surfaceFill,
+              borderRadius: BorderRadius.circular(999),
+            ),
+            child: Text(
+              'ZionChat',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: AppFontWeights.medium,
+                color: cs.onSurface,
+              ),
+            ),
+          ),
+        ],
       ),
     );
 
     return Scaffold(
       appBar: AppBar(
-        leading: Tooltip(
-          message: l10n.settingsPageBackButton,
-          child: _TactileIconButton(
-            icon: Lucide.ArrowLeft,
-            color: cs.onSurface,
-            size: 22,
-            onTap: () => Navigator.of(context).maybePop(),
+        toolbarHeight: 72,
+        centerTitle: true,
+        leadingWidth: 76,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 12),
+          child: Center(
+            child: Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: context.appColors.surfaceFill,
+                shape: BoxShape.circle,
+              ),
+              alignment: Alignment.center,
+              child: Tooltip(
+                message: l10n.settingsPageBackButton,
+                child: _TactileIconButton(
+                  icon: Lucide.ArrowLeft,
+                  color: cs.onSurface,
+                  size: 22,
+                  onTap: () => Navigator.of(context).maybePop(),
+                ),
+              ),
+            ),
           ),
         ),
-        title: Text(l10n.settingsPageTitle),
+        title: Text(
+          l10n.settingsPageTitle,
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: AppFontWeights.semibold,
+            color: cs.onSurface,
+          ),
+        ),
       ),
       body: SettingsSearchList(
         onSearch: (origin) => showMobileSettingsSearch(
@@ -136,10 +215,11 @@ class SettingsPage extends StatelessWidget {
           onColorMode: pickThemeMode,
         ),
         children: [
+          profileHeader(),
           if (!settings.hasAnyActiveModel)
             Material(
               color: cs.errorContainer.withValues(alpha: 0.30),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(24),
               child: Padding(
                 padding: const EdgeInsets.all(12),
                 child: Row(
@@ -165,7 +245,7 @@ class SettingsPage extends StatelessWidget {
             ),
 
           // 通用设置：使用iOS风格分组卡片，黑色（中性）图标与标题，无描述
-          header(l10n.settingsPageGeneralSection, first: true),
+          header('MY ZIONCHAT', first: true),
           SectionCard(
             children: [
               _iosNavRow(
@@ -204,7 +284,7 @@ class SettingsPage extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: 18),
           header(l10n.settingsPageModelsServicesSection),
           SectionCard(
             children: [
@@ -363,7 +443,7 @@ class SettingsPage extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: 18),
           header(l10n.settingsPageDataSection),
           SectionCard(
             children: [
@@ -392,7 +472,7 @@ class SettingsPage extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: 18),
           header(l10n.settingsPageAboutSection),
           SectionCard(
             children: [
@@ -510,11 +590,11 @@ Widget _iosDivider(BuildContext context) {
   final cs = Theme.of(context).colorScheme;
   // Restore previous visual: align with icon slot (36) + gap (12) + padding (12)
   return Divider(
-    height: 6,
+    height: 1,
     thickness: 0.6,
-    indent: 54,
-    endIndent: 12,
-    color: cs.outlineVariant.withValues(alpha: 0.18),
+    indent: 62,
+    endIndent: 18,
+    color: cs.onSurface.withValues(alpha: 0.07),
   );
 }
 
@@ -612,16 +692,16 @@ Widget _iosNavRow(
         base: baseColor,
         builder: (c) {
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
             child: Row(
               children: [
-                SizedBox(width: 36, child: Icon(icon, size: 20, color: c)),
-                const SizedBox(width: 12),
+                SizedBox(width: 34, child: Icon(icon, size: 22, color: c)),
+                const SizedBox(width: 10),
                 Expanded(
                   child: Text(
                     label,
                     style: TextStyle(
-                      fontSize: 15,
+                      fontSize: 16,
                       color: c,
                       fontWeight: AppFontWeights.medium,
                     ),

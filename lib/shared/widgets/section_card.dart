@@ -57,13 +57,13 @@ class SectionCard extends StatelessWidget {
     final colors = context.appColors;
     final cs = Theme.of(context).colorScheme;
     final emphasized = variant == SectionCardVariant.emphasized;
-    final resolvedRadius = radius ?? (emphasized ? 18.0 : 12.0);
+    final resolvedRadius = radius ?? (emphasized ? 34.0 : 30.0);
     final borderColor = emphasized ? colors.hairlineStrong : colors.hairline;
     final resolvedPadding =
         padding ??
         (child != null && children == null
             ? EdgeInsets.zero
-            : const EdgeInsets.symmetric(vertical: 4));
+            : const EdgeInsets.symmetric(vertical: 6));
     final body = children != null
         ? Column(
             crossAxisAlignment: crossAxisAlignment,
@@ -83,9 +83,11 @@ class SectionCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: colors.surfaceCard,
+        color: emphasized ? colors.surfaceCard : colors.surfaceFill,
         borderRadius: BorderRadius.circular(resolvedRadius),
-        border: Border.all(color: borderColor, width: 0.6),
+        border: emphasized
+            ? Border.all(color: borderColor.withValues(alpha: 0.45), width: 0.8)
+            : null,
         boxShadow: shadow,
       ),
       clipBehavior: Clip.antiAlias,

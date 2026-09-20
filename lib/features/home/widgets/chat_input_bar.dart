@@ -2617,9 +2617,9 @@ class _ChatInputBarState extends State<ChatInputBar>
       child: Padding(
         padding: const EdgeInsets.fromLTRB(
           AppSpacing.sm,
-          AppSpacing.xxs,
-          AppSpacing.sm,
           AppSpacing.xs,
+          AppSpacing.sm,
+          AppSpacing.sm,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -2640,24 +2640,20 @@ class _ChatInputBarState extends State<ChatInputBar>
               children: [
                 // Main input container with iOS-like frosted glass effect
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(32),
                   child: BackdropFilter(
-                    filter: ui.ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+                    filter: ui.ImageFilter.blur(sigmaX: 0, sigmaY: 0),
                     child: Container(
                       decoration: BoxDecoration(
                         // Translucent background over blurred content
                         color: inputFillColor,
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(32),
                         // Use previous gray border for better contrast on white
                         border: Border.all(
-                          color: isDark
-                              ? theme.colorScheme.onSurface.withValues(
-                                  alpha: 0.10,
-                                )
-                              : theme.colorScheme.outline.withValues(
-                                  alpha: 0.20,
-                                ),
-                          width: 1,
+                          color: theme.colorScheme.onSurface.withValues(
+                            alpha: isDark ? 0.08 : 0.06,
+                          ),
+                          width: 0.8,
                         ),
                       ),
                       child: Column(
@@ -3120,7 +3116,7 @@ class _QueuedInputBanner extends StatelessWidget {
         color: isDark
             ? theme.colorScheme.onSurface.withValues(alpha: 0.08)
             : theme.colorScheme.surface.withValues(alpha: 0.84),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(24),
         border: Border.all(
           color: theme.colorScheme.outline.withValues(alpha: 0.16),
         ),
@@ -3393,12 +3389,13 @@ class _CompactSendButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final activeBg = Color.lerp(cs.onSurface, color, 0.04)!;
     final bg = (enabled || loading)
-        ? color
-        : cs.onSurface.withValues(alpha: 0.12);
+        ? activeBg
+        : cs.onSurface.withValues(alpha: 0.10);
     final fg = (enabled || loading)
-        ? cs.onPrimary
-        : cs.onSurface.withValues(alpha: 0.38);
+        ? cs.surface
+        : cs.onSurface.withValues(alpha: 0.34);
 
     final button = Material(
       color: bg,
@@ -3407,7 +3404,7 @@ class _CompactSendButton extends StatelessWidget {
         customBorder: const CircleBorder(),
         onTap: loading ? onStop : (enabled ? onSend : null),
         child: Padding(
-          padding: const EdgeInsets.all(7),
+          padding: const EdgeInsets.all(9),
           child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 200),
             transitionBuilder: (child, anim) => ScaleTransition(

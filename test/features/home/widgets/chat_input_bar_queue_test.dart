@@ -515,7 +515,7 @@ void main() {
     focusNode.dispose();
   });
 
-  testWidgets('输入框外层底部留白只下移一点', (tester) async {
+  testWidgets('输入框外层留白匹配大圆角布局', (tester) async {
     final controller = TextEditingController();
     final focusNode = FocusNode();
 
@@ -531,7 +531,7 @@ void main() {
       find.byWidgetPredicate(
         (widget) =>
             widget is Padding &&
-            widget.padding == const EdgeInsets.fromLTRB(12, 4, 12, 8),
+            widget.padding == const EdgeInsets.fromLTRB(12, 8, 12, 12),
       ),
       findsOneWidget,
     );
@@ -552,7 +552,7 @@ Finder _mainInputSurfaceFinder() {
         widget is Container &&
         widget.decoration is BoxDecoration &&
         (widget.decoration! as BoxDecoration).borderRadius ==
-            BorderRadius.circular(20),
+            BorderRadius.circular(32),
   );
 }
 

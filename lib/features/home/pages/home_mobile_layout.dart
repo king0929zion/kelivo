@@ -146,7 +146,46 @@ class HomeMobileScaffold extends StatelessWidget {
         .watch<SettingsProvider>()
         .useNewAssistantAvatarUx;
 
+    Widget circleAction(Widget child, {EdgeInsetsGeometry? margin}) {
+      return Container(
+        width: 46,
+        height: 46,
+        margin: margin,
+        decoration: BoxDecoration(
+          color: cs.surfaceContainerLow,
+          shape: BoxShape.circle,
+        ),
+        alignment: Alignment.center,
+        child: child,
+      );
+    }
+
+    final titleContent = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (useNewAssistantAvatarUx) ...[
+          _buildAssistantTitleAvatar(context),
+          const SizedBox(width: 8),
+        ],
+        Flexible(
+          child: AnimatedTextSwap(
+            text: title,
+            style: TextStyle(
+              fontSize: isDesktopPlatform ? 14 : 17,
+              fontWeight: AppFontWeights.semibold,
+              color: cs.onSurface,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
+
     return AppBar(
+      toolbarHeight: 72,
+      centerTitle: true,
+      titleSpacing: 0,
       systemOverlayStyle: (Theme.of(context).brightness == Brightness.dark)
           ? const SystemUiOverlayStyle(
               statusBarColor: Colors.transparent,
@@ -162,138 +201,86 @@ class HomeMobileScaffold extends StatelessWidget {
       surfaceTintColor: Colors.transparent,
       elevation: 0,
       scrolledUnderElevation: 0,
-      leading: Builder(
-        builder: (context) {
-          return IosIconButton(
-            size: 20,
-            padding: const EdgeInsets.all(8),
-            minSize: 40,
-            builder: (color) => SvgPicture.asset(
-              'assets/icons/list.svg',
-              width: 14,
-              height: 14,
-              colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      leadingWidth: 72,
+      leading: Padding(
+        padding: const EdgeInsets.only(left: 12),
+        child: Center(
+          child: circleAction(
+            IosIconButton(
+              size: 20,
+              padding: const EdgeInsets.all(8),
+              minSize: 44,
+              builder: (color) => SvgPicture.asset(
+                'assets/icons/list.svg',
+                width: 15,
+                height: 15,
+                colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+              ),
+              onTap: () {
+                onDismissKeyboard();
+                onToggleDrawer();
+              },
             ),
-            onTap: () {
-              onDismissKeyboard();
-              onToggleDrawer();
-            },
-          );
-        },
+          ),
+        ),
       ),
-      titleSpacing: 2,
-      title: useNewAssistantAvatarUx
-          ? Row(
-              children: [
-                _buildAssistantTitleAvatar(context),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      AnimatedTextSwap(
-                        text: title,
-                        style: TextStyle(
-                          fontSize: isDesktopPlatform ? 14 : 16,
-                          fontWeight: AppFontWeights.medium,
-                        ),
-                      ),
-                      if (providerName != null && modelDisplay != null)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 2),
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(6),
-                            onTap: onSelectModel,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 0),
-                              child: AnimatedTextSwap(
-                                text: '$modelDisplay ($providerName)',
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  color: cs.onSurface.withValues(alpha: 0.6),
-                                  fontWeight: AppFontWeights.medium,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ],
-            )
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                AnimatedTextSwap(
-                  text: title,
-                  style: TextStyle(
-                    fontSize: isDesktopPlatform ? 14 : 16,
-                    fontWeight: AppFontWeights.medium,
-                  ),
-                ),
-                if (providerName != null && modelDisplay != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 2),
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(6),
-                      onTap: onSelectModel,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 0),
-                        child: AnimatedTextSwap(
-                          text: '$modelDisplay ($providerName)',
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: cs.onSurface.withValues(alpha: 0.6),
-                            fontWeight: AppFontWeights.medium,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
+      title: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 220),
+        child: Material(
+          color: cs.surfaceContainerLow,
+          borderRadius: BorderRadius.circular(999),
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: onSelectModel,
+            borderRadius: BorderRadius.circular(999),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 11),
+              child: titleContent,
             ),
+          ),
+        ),
+      ),
       actions: [
-        IosIconButton(
-          size: 20,
-          minSize: 44,
-          onTap: onOpenMiniMap,
-          semanticLabel: AppLocalizations.of(context)!.miniMapTooltip,
-          icon: Lucide.Map,
+        circleAction(
+          IosIconButton(
+            size: 19,
+            minSize: 44,
+            onTap: onOpenMiniMap,
+            semanticLabel: AppLocalizations.of(context)!.miniMapTooltip,
+            icon: Lucide.Map,
+          ),
+          margin: const EdgeInsets.only(right: 8),
         ),
-        IosIconButton(
-          size: 22,
-          minSize: 44,
-          onTap: () async {
-            if (canToggleTemporaryConversation) {
-              await onToggleTemporaryConversation();
-            } else {
-              await onCreateNewConversation();
-            }
-          },
-          semanticLabel: canToggleTemporaryConversation
-              ? AppLocalizations.of(context)!.temporaryChatToggleTooltip
-              : AppLocalizations.of(context)!.titleForLocale,
-          icon: canToggleTemporaryConversation && !temporaryConversationEnabled
-              ? Lucide.MessageCircleDashed
-              : Lucide.MessageCirclePlus,
-          builder:
-              canToggleTemporaryConversation && temporaryConversationEnabled
-              ? (color) => SvgPicture.asset(
-                  'assets/icons/temporary_chat_checked.svg',
-                  width: 22,
-                  height: 22,
-                  colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-                )
-              : null,
+        circleAction(
+          IosIconButton(
+            size: 21,
+            minSize: 44,
+            onTap: () async {
+              if (canToggleTemporaryConversation) {
+                await onToggleTemporaryConversation();
+              } else {
+                await onCreateNewConversation();
+              }
+            },
+            semanticLabel: canToggleTemporaryConversation
+                ? AppLocalizations.of(context)!.temporaryChatToggleTooltip
+                : AppLocalizations.of(context)!.titleForLocale,
+            icon:
+                canToggleTemporaryConversation && !temporaryConversationEnabled
+                ? Lucide.MessageCircleDashed
+                : Lucide.MessageCirclePlus,
+            builder:
+                canToggleTemporaryConversation && temporaryConversationEnabled
+                ? (color) => SvgPicture.asset(
+                    'assets/icons/temporary_chat_checked.svg',
+                    width: 21,
+                    height: 21,
+                    colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+                  )
+                : null,
+          ),
+          margin: const EdgeInsets.only(right: 10),
         ),
-        const SizedBox(width: 4),
       ],
     );
   }
