@@ -72,7 +72,7 @@ class IosNavRow extends StatelessWidget {
       onTap: onTap,
       onLongPress: onLongPress,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
         child: Row(
           children: [
             if (icon != null || leading != null) ...[
@@ -317,3 +317,4 @@ class IosSectionFooter extends StatelessWidget {
     );
   }
 }
+

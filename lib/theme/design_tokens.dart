@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AppShadows {
-  static List<BoxShadow> soft = [
-    BoxShadow(
-      color: Colors.black.withValues(alpha: 0.05),
-      blurRadius: 18,
-      offset: const Offset(0, 6),
-    ),
-  ];
+  static const List<BoxShadow> soft = <BoxShadow>[];
 }
 
 /// Shared desktop popover wash. Alpha is unchanged from the previous
@@ -25,7 +19,11 @@ class AppOverlayColors {
 }
 
 class AppRadii {
-  static const double capsule = 28;
+  static const double compact = 18;
+  static const double control = 28;
+  static const double card = 32;
+  static const double sheet = 36;
+  static const double capsule = 999;
 }
 
 class AppSpacing {
@@ -35,3 +33,4 @@ class AppSpacing {
   static const double md = 16;
   static const double lg = 20;
 }
+

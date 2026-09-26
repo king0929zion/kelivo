@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:Kelivo/theme/design_tokens.dart';
 import 'package:provider/provider.dart';
 import 'package:Kelivo/core/providers/settings_provider.dart';
 import 'package:Kelivo/theme/app_semantic_colors.dart';
@@ -56,14 +57,12 @@ class SectionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.appColors;
     final cs = Theme.of(context).colorScheme;
-    final emphasized = variant == SectionCardVariant.emphasized;
-    final resolvedRadius = radius ?? (emphasized ? 18.0 : 12.0);
-    final borderColor = emphasized ? colors.hairlineStrong : colors.hairline;
+    final resolvedRadius = radius ?? AppRadii.card;
     final resolvedPadding =
         padding ??
         (child != null && children == null
             ? EdgeInsets.zero
-            : const EdgeInsets.symmetric(vertical: 4));
+            : EdgeInsets.zero);
     final body = children != null
         ? Column(
             crossAxisAlignment: crossAxisAlignment,
@@ -83,13 +82,13 @@ class SectionCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: colors.surfaceCard,
+        color: colors.surfaceFill,
         borderRadius: BorderRadius.circular(resolvedRadius),
-        border: Border.all(color: borderColor, width: 0.6),
-        boxShadow: shadow,
+        boxShadow: const [],
       ),
       clipBehavior: Clip.antiAlias,
       child: Padding(padding: resolvedPadding, child: body),
     );
   }
 }
+

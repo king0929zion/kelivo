@@ -249,7 +249,7 @@ Future<ModelSelection?> showModelSelector(
       isScrollControlled: true,
       backgroundColor: context.overlaySurface,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(36)),
       ),
       builder: (ctx) => _ModelSelectSheet(
         limitProviderKey: limitProviderKey,
@@ -911,7 +911,7 @@ class _ModelSelectSheetState extends State<_ModelSelectSheet> {
                   decoration: BoxDecoration(
                     color: context.overlaySurface,
                     borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(20),
+                      top: Radius.circular(36),
                     ),
                   ),
                   child: Column(
@@ -930,6 +930,17 @@ class _ModelSelectSheetState extends State<_ModelSelectSheet> {
                           ),
                           const SizedBox(height: 8),
                         ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(24, 12, 24, 20),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            l10n.chatInputBarSelectModelTooltip,
+                            style: TextStyle(fontSize: 21, color: cs.onSurface,
+                                fontWeight: AppFontWeights.semibold),
+                          ),
+                        ),
                       ),
                       // Fixed search field (iOS-like input style)
                       Padding(
@@ -1180,6 +1191,9 @@ class _ModelSelectSheetState extends State<_ModelSelectSheet> {
                     context,
                     row.item,
                     showProviderLabel: row.showProviderLabel,
+                    first: index == 0 || _rows[index - 1] is! _ModelRow,
+                    last: index == _rows.length - 1 ||
+                        _rows[index + 1] is! _ModelRow,
                   );
                 }
                 return const SizedBox.shrink();
@@ -1336,7 +1350,7 @@ class _ModelSelectSheetState extends State<_ModelSelectSheet> {
     final cs = Theme.of(context).colorScheme;
     return Container(
       alignment: Alignment.centerLeft,
-      padding: const EdgeInsets.fromLTRB(16, 14, 16, 8),
+      padding: const EdgeInsets.fromLTRB(28, 18, 28, 14),
       child: Row(
         children: [
           Expanded(
@@ -1420,24 +1434,25 @@ class _ModelSelectSheetState extends State<_ModelSelectSheet> {
     BuildContext context,
     _ModelItem m, {
     bool showProviderLabel = false,
+    bool first = true,
+    bool last = true,
   }) {
     final l10n = AppLocalizations.of(context)!;
     final cs = Theme.of(context).colorScheme;
     final settings = context.read<SettingsProvider>();
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final bg = m.selected
-        ? (isDark
-              ? cs.primary.withValues(alpha: 0.12)
-              : cs.primary.withValues(alpha: 0.08))
-        : sheetTileColor(context);
+    final bg = context.appColors.surfaceFill;
+    final radius = BorderRadius.vertical(
+      top: Radius.circular(first ? 32 : 0),
+      bottom: Radius.circular(last ? 32 : 0),
+    );
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: EdgeInsets.fromLTRB(20, 0, 20, last ? 12 : 1),
       child: RepaintBoundary(
         child: IosCardPress(
           baseColor: bg,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: radius,
           pressedBlendStrength: 0.10,
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           onTap: () =>
               Navigator.of(context).pop(ModelSelection(m.providerKey, m.id)),
           onLongPress: () async {
@@ -1457,7 +1472,7 @@ class _ModelSelectSheetState extends State<_ModelSelectSheet> {
             child: Row(
               children: [
                 _BrandAvatar(name: m.id, assetOverride: m.asset, size: 28),
-                const SizedBox(width: 10),
+                const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1468,7 +1483,7 @@ class _ModelSelectSheetState extends State<_ModelSelectSheet> {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: 17,
                             fontWeight: AppFontWeights.semibold,
                           ),
                         )
@@ -1477,7 +1492,7 @@ class _ModelSelectSheetState extends State<_ModelSelectSheet> {
                           TextSpan(
                             text: m.info.displayName,
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: 17,
                               fontWeight: AppFontWeights.semibold,
                             ),
                             children: [
@@ -1493,25 +1508,28 @@ class _ModelSelectSheetState extends State<_ModelSelectSheet> {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
-                      const SizedBox(height: 4),
-                      ModelTagWrap(model: m.info),
+
                     ],
                   ),
                 ),
+                if (m.selected) ...[
+                  Icon(Lucide.Check, size: 20, color: cs.onSurface),
+                  const SizedBox(width: 8),
+                ],
                 Builder(
                   builder: (context) {
                     final pinnedNow = context.select<SettingsProvider, bool>(
                       (s) => s.isModelPinned(m.providerKey, m.id),
                     );
                     final icon = pinnedNow
-                        ? Icons.favorite
-                        : Icons.favorite_border;
+                        ? Lucide.Heart
+                        : Lucide.Heart;
                     return Tooltip(
                       message: l10n.modelSelectSheetFavoriteTooltip,
                       child: IosIconButton(
                         icon: icon,
                         size: 20,
-                        color: cs.primary,
+                        color: pinnedNow ? cs.onSurface : cs.onSurface.withValues(alpha: 0.28),
                         onTap: () =>
                             settings.togglePinModel(m.providerKey, m.id),
                         padding: const EdgeInsets.all(6),
@@ -2593,3 +2611,4 @@ class _DesktopModelSelectDialogBodyState
 }
 
 // (desktop tactile row removed in favor of IosCardPress for consistency)
+

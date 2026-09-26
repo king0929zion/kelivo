@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../shared/widgets/flat_chrome.dart';
 import '../../../core/services/incoming_share_service.dart';
 import 'composer_attachment_card.dart';
 import 'dart:collection';
@@ -280,6 +281,7 @@ class _ChatInputBarState extends State<ChatInputBar>
   // Suppress context menu briefly after app resume to avoid flickering
   bool _suppressContextMenu = false;
   bool _isSubmitting = false;
+  bool _mobileToolsOpen = false;
   int _submitSerial = 0;
   String? _imageModeModelKey;
   String? _lastImageModeModelKey;
@@ -1791,7 +1793,8 @@ class _ChatInputBarState extends State<ChatInputBar>
       builder: (context, constraints) {
         final List<_OverflowAction> actions = [];
 
-        // Model select (always present; can be hidden if overflow)
+        // Phones select the model from the header capsule.
+        if (MediaQuery.sizeOf(context).width >= AppBreakpoints.tablet) {
         actions.add(
           _OverflowAction(
             width: (widget.modelIcon != null) ? modelButtonW : normalButtonW,
@@ -1810,6 +1813,8 @@ class _ChatInputBarState extends State<ChatInputBar>
             ),
           ),
         );
+
+        }
 
         // Search button (stateful icon depending on provider config)
         final settings = context.watch<SettingsProvider>();
@@ -2609,149 +2614,7 @@ class _ChatInputBarState extends State<ChatInputBar>
         ? BoxConstraints(maxHeight: maxInputHeight)
         : const BoxConstraints();
 
-    return SafeArea(
-      top: false,
-      left: false,
-      right: false,
-      bottom: true,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(
-          AppSpacing.sm,
-          AppSpacing.xxs,
-          AppSpacing.sm,
-          AppSpacing.xs,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (widget.hasQueuedInput) ...[
-              _QueuedInputBanner(
-                label: AppLocalizations.of(context)!.chatInputBarQueuedPending,
-                previewText: widget.queuedPreviewText,
-                cancelLabel: AppLocalizations.of(
-                  context,
-                )!.chatInputBarQueuedCancel,
-                onCancel: widget.onCancelQueuedInput,
-              ),
-              const SizedBox(height: AppSpacing.xs),
-            ],
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                // Main input container with iOS-like frosted glass effect
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: BackdropFilter(
-                    filter: ui.ImageFilter.blur(sigmaX: 14, sigmaY: 14),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        // Translucent background over blurred content
-                        color: inputFillColor,
-                        borderRadius: BorderRadius.circular(20),
-                        // Use previous gray border for better contrast on white
-                        border: Border.all(
-                          color: isDark
-                              ? theme.colorScheme.onSurface.withValues(
-                                  alpha: 0.10,
-                                )
-                              : theme.colorScheme.outline.withValues(
-                                  alpha: 0.20,
-                                ),
-                          width: 1,
-                        ),
-                      ),
-                      child: Column(
-                        children: [
-                          if (widget.mediaController != null) ...[
-                            ValueListenableBuilder<ShareImportProgress?>(
-                              valueListenable:
-                                  widget.mediaController!.shareImport,
-                              builder: (context, progress, _) =>
-                                  progress == null
-                                  ? const SizedBox.shrink()
-                                  : ComposerImportProgress(
-                                      progress: progress,
-                                      onCancel: () => widget
-                                          .mediaController!
-                                          .cancelShareImport
-                                          ?.call(),
-                                    ),
-                            ),
-                            if (isMobileLayout &&
-                                (hasText || hasDocs || hasImages))
-                              ValueListenableBuilder<VoidCallback?>(
-                                valueListenable:
-                                    widget.mediaController!.sharedDraftAction,
-                                builder: (context, onMove, _) => onMove == null
-                                    ? const SizedBox.shrink()
-                                    : Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                          12,
-                                          8,
-                                          8,
-                                          0,
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              AppLocalizations.of(
-                                                context,
-                                              )!.incomingShareTitle,
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                color: theme
-                                                    .colorScheme
-                                                    .onSurfaceVariant,
-                                              ),
-                                            ),
-                                            const Spacer(),
-                                            IosCardPress(
-                                              onTap: onMove,
-                                              haptics: false,
-                                              baseColor: Colors.transparent,
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                    horizontal: 8,
-                                                    vertical: 6,
-                                                  ),
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Text(
-                                                    AppLocalizations.of(
-                                                      context,
-                                                    )!.incomingShareMoveTo,
-                                                    style: TextStyle(
-                                                      fontSize: 12,
-                                                      color: theme
-                                                          .colorScheme
-                                                          .primary,
-                                                      fontWeight:
-                                                          AppFontWeights.medium,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(width: 4),
-                                                  Icon(
-                                                    Lucide.ArrowRight,
-                                                    size: 14,
-                                                    color: theme
-                                                        .colorScheme
-                                                        .primary,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                              ),
-                          ],
-                          if (hasDocs || hasImages)
-                            _buildInlineAttachmentPreviews(context, isDark),
-                          // Input field with expand/collapse button
-                          Stack(
+    final editor = Stack(
                             children: [
                               Padding(
                                 padding: const EdgeInsets.fromLTRB(
@@ -2888,6 +2751,9 @@ class _ChatInputBarState extends State<ChatInputBar>
                                                     .withValues(alpha: 0.45),
                                               ),
                                               border: InputBorder.none,
+                                              enabledBorder: InputBorder.none,
+                                              focusedBorder: InputBorder.none,
+                                              filled: false,
                                               contentPadding:
                                                   const EdgeInsets.symmetric(
                                                     vertical: 2,
@@ -2935,7 +2801,271 @@ class _ChatInputBarState extends State<ChatInputBar>
                                   ),
                                 ),
                             ],
+                          );
+    final importAndAttachments = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+                          if (widget.mediaController != null) ...[
+                            ValueListenableBuilder<ShareImportProgress?>(
+                              valueListenable:
+                                  widget.mediaController!.shareImport,
+                              builder: (context, progress, _) =>
+                                  progress == null
+                                  ? const SizedBox.shrink()
+                                  : ComposerImportProgress(
+                                      progress: progress,
+                                      onCancel: () => widget
+                                          .mediaController!
+                                          .cancelShareImport
+                                          ?.call(),
+                                    ),
+                            ),
+                            if (isMobileLayout &&
+                                (hasText || hasDocs || hasImages))
+                              ValueListenableBuilder<VoidCallback?>(
+                                valueListenable:
+                                    widget.mediaController!.sharedDraftAction,
+                                builder: (context, onMove, _) => onMove == null
+                                    ? const SizedBox.shrink()
+                                    : Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                          12,
+                                          8,
+                                          8,
+                                          0,
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              AppLocalizations.of(
+                                                context,
+                                              )!.incomingShareTitle,
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: theme
+                                                    .colorScheme
+                                                    .onSurfaceVariant,
+                                              ),
+                                            ),
+                                            const Spacer(),
+                                            IosCardPress(
+                                              onTap: onMove,
+                                              haptics: false,
+                                              baseColor: Colors.transparent,
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 8,
+                                                    vertical: 6,
+                                                  ),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Text(
+                                                    AppLocalizations.of(
+                                                      context,
+                                                    )!.incomingShareMoveTo,
+                                                    style: TextStyle(
+                                                      fontSize: 12,
+                                                      color: theme
+                                                          .colorScheme
+                                                          .primary,
+                                                      fontWeight:
+                                                          AppFontWeights.medium,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 4),
+                                                  Icon(
+                                                    Lucide.ArrowRight,
+                                                    size: 14,
+                                                    color: theme
+                                                        .colorScheme
+                                                        .primary,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                              ),
+                          ],
+                          if (hasDocs || hasImages)
+                            _buildInlineAttachmentPreviews(context, isDark),
+
+      ],
+    );
+    if (isMobileLayout) {
+      final l10n = AppLocalizations.of(context)!;
+      final cs = theme.colorScheme;
+      return SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 10),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (widget.hasQueuedInput) ...[
+                _QueuedInputBanner(
+                  label: l10n.chatInputBarQueuedPending,
+                  previewText: widget.queuedPreviewText,
+                  cancelLabel: l10n.chatInputBarQueuedCancel,
+                  onCancel: widget.onCancelQueuedInput,
+                ),
+                const SizedBox(height: 8),
+              ],
+              importAndAttachments,
+              if (_imageModeActive)
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: TextButton.icon(
+                    onPressed: () => setState(() {
+                      _dismissedImageModeModelKey = _imageModeModelKey;
+                    }),
+                    icon: const Icon(Lucide.X, size: 14),
+                    label: Text(l10n.chatInputBarImageMode),
+                  ),
+                ),
+              if (_ownsVoiceSession)
+                _buildVoiceRecordingRow(context, theme)
+              else
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    FlatIconButton(
+                      icon: _mobileToolsOpen ? Lucide.X : Lucide.Image,
+                      label: l10n.chatInputBarMoreTooltip,
+                      onTap: _composerLocked ? null : () => setState(() {
+                        _mobileToolsOpen = !_mobileToolsOpen;
+                      }),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Container(
+                        constraints: const BoxConstraints(minHeight: 52),
+                        decoration: BoxDecoration(
+                          color: cs.surface,
+                          borderRadius: BorderRadius.circular(28),
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Expanded(child: Padding(
+                              padding: const EdgeInsets.only(top: 8, bottom: 4),
+                              child: editor,
+                            )),
+                            Padding(
+                              padding: const EdgeInsets.all(4),
+                              child: _CompactSendButton(
+                                enabled: (hasText || hasImages || hasDocs) &&
+                                    !_hasUnreadyImages && !widget.loading &&
+                                    !_composerLocked,
+                                loading: widget.loading,
+                                onSend: _handleSend,
+                                onStop: widget.loading ? widget.onStop : null,
+                                color: cs.primary,
+                                icon: Lucide.ArrowUp,
+                                tooltip: widget.sendButtonTooltip,
+                                size: 44,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              if (_mobileToolsOpen && !_ownsVoiceSession)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: cs.surface,
+                      borderRadius: BorderRadius.circular(28),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(child: _buildResponsiveLeftActions(context)),
+                        if (showVoiceInput)
+                          _CompactIconButton(
+                            tooltip: l10n.chatInputBarVoiceInputTooltip,
+                            icon: Lucide.Mic,
+                            onTap: _composerLocked || widget.loading
+                                ? null : () => unawaited(_startVoiceInput()),
                           ),
+                        if (widget.showMoreButton)
+                          _CompactIconButton(
+                            tooltip: l10n.chatInputBarMoreTooltip,
+                            icon: Lucide.Plus,
+                            onTap: _composerLocked ? null : widget.onMore,
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return SafeArea(
+      top: false,
+      left: false,
+      right: false,
+      bottom: true,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.sm,
+          AppSpacing.xxs,
+          AppSpacing.sm,
+          AppSpacing.xs,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (widget.hasQueuedInput) ...[
+              _QueuedInputBanner(
+                label: AppLocalizations.of(context)!.chatInputBarQueuedPending,
+                previewText: widget.queuedPreviewText,
+                cancelLabel: AppLocalizations.of(
+                  context,
+                )!.chatInputBarQueuedCancel,
+                onCancel: widget.onCancelQueuedInput,
+              ),
+              const SizedBox(height: AppSpacing.xs),
+            ],
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                // Main input container with iOS-like frosted glass effect
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: BackdropFilter(
+                    filter: ui.ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        // Translucent background over blurred content
+                        color: inputFillColor,
+                        borderRadius: BorderRadius.circular(20),
+                        // Use previous gray border for better contrast on white
+                        border: Border.all(
+                          color: isDark
+                              ? theme.colorScheme.onSurface.withValues(
+                                  alpha: 0.10,
+                                )
+                              : theme.colorScheme.outline.withValues(
+                                  alpha: 0.20,
+                                ),
+                          width: 1,
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          importAndAttachments,
+                          editor,
                           // Bottom buttons row (no divider)
                           Padding(
                             padding: const EdgeInsets.fromLTRB(
@@ -3380,6 +3510,7 @@ class _CompactSendButton extends StatelessWidget {
     this.loading = false,
     this.onStop,
     this.tooltip,
+    this.size = 32,
   });
 
   final bool enabled;
@@ -3389,6 +3520,7 @@ class _CompactSendButton extends StatelessWidget {
   final Color color;
   final IconData icon;
   final String? tooltip;
+  final double size;
 
   @override
   Widget build(BuildContext context) {
@@ -3406,8 +3538,9 @@ class _CompactSendButton extends StatelessWidget {
       child: InkWell(
         customBorder: const CircleBorder(),
         onTap: loading ? onStop : (enabled ? onSend : null),
-        child: Padding(
-          padding: const EdgeInsets.all(7),
+        child: SizedBox(
+          width: size,
+          height: size,
           child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 200),
             transitionBuilder: (child, anim) => ScaleTransition(
@@ -3568,3 +3701,4 @@ class _VoiceWaveformPainter extends CustomPainter {
   @override
   bool shouldRepaint(_VoiceWaveformPainter oldDelegate) => true;
 }
+

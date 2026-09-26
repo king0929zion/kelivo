@@ -489,9 +489,9 @@ class SettingsProvider extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.system;
   ThemeMode get themeMode => _themeMode;
   // Theme palette & dynamic color
-  String _themePaletteId = 'default';
+  String _themePaletteId = 'monochrome';
   String get themePaletteId => _themePaletteId;
-  bool _useDynamicColor = true; // when supported on Android
+  bool _useDynamicColor = false; // when supported on Android
   bool get useDynamicColor => _useDynamicColor;
   bool _dynamicColorSupported = false; // runtime capability, not persisted
   bool get dynamicColorSupported => _dynamicColorSupported;
@@ -779,8 +779,8 @@ class SettingsProvider extends ChangeNotifier {
       default:
         _themeMode = ThemeMode.system;
     }
-    _themePaletteId = prefs.getString(_themePaletteKey) ?? 'default';
-    _useDynamicColor = prefs.getBool(_useDynamicColorKey) ?? true;
+    _themePaletteId = prefs.getString(_themePaletteKey) ?? 'monochrome';
+    _useDynamicColor = prefs.getBool(_useDynamicColorKey) ?? false;
     _loadCustomThemes(prefs);
     final cfgStr = prefs.getString(_providerConfigsKey);
     if (cfgStr != null && cfgStr.isNotEmpty) {
@@ -1070,13 +1070,13 @@ class SettingsProvider extends ChangeNotifier {
             .clamp(minMemoryInjectionMaxItems, maxMemoryInjectionMaxItems);
 
     // display settings
-    _showUserAvatar = prefs.getBool(_displayShowUserAvatarKey) ?? true;
-    _showModelIcon = prefs.getBool(_displayShowModelIconKey) ?? true;
+    _showUserAvatar = prefs.getBool(_displayShowUserAvatarKey) ?? false;
+    _showModelIcon = prefs.getBool(_displayShowModelIconKey) ?? false;
     _showModelNameTimestamp =
-        prefs.getBool(_displayShowModelNameTimestampKey) ?? true;
-    _showTokenStats = prefs.getBool(_displayShowTokenStatsKey) ?? true;
+        prefs.getBool(_displayShowModelNameTimestampKey) ?? false;
+    _showTokenStats = prefs.getBool(_displayShowTokenStatsKey) ?? false;
     _showUserNameTimestamp =
-        prefs.getBool(_displayShowUserNameTimestampKey) ?? true;
+        prefs.getBool(_displayShowUserNameTimestampKey) ?? false;
     // new split settings: default to the legacy combined setting value for backward compat
     final legacyUserNameTs = _showUserNameTimestamp;
     _showUserName = prefs.getBool(_displayShowUserNameKey) ?? legacyUserNameTs;
@@ -4541,7 +4541,7 @@ Requirements:
   }
 
   // Display settings: user avatar and model icon visibility
-  bool _showUserAvatar = true;
+  bool _showUserAvatar = false;
   bool get showUserAvatar => _showUserAvatar;
   Future<void> setShowUserAvatar(bool v) async {
     if (_showUserAvatar == v) return;
@@ -4552,7 +4552,7 @@ Requirements:
   }
 
   // Display: user name & timestamp (for user messages)
-  bool _showUserNameTimestamp = true;
+  bool _showUserNameTimestamp = false;
   bool get showUserNameTimestamp => _showUserNameTimestamp;
   Future<void> setShowUserNameTimestamp(bool v) async {
     if (_showUserNameTimestamp == v) return;
@@ -4594,7 +4594,7 @@ Requirements:
     await prefs.setBool(_displayShowUserMessageActionsKey, v);
   }
 
-  bool _showModelIcon = true;
+  bool _showModelIcon = false;
   bool get showModelIcon => _showModelIcon;
   Future<void> setShowModelIcon(bool v) async {
     if (_showModelIcon == v) return;
@@ -4605,7 +4605,7 @@ Requirements:
   }
 
   // Display: model name & timestamp (for assistant messages)
-  bool _showModelNameTimestamp = true;
+  bool _showModelNameTimestamp = false;
   bool get showModelNameTimestamp => _showModelNameTimestamp;
   Future<void> setShowModelNameTimestamp(bool v) async {
     if (_showModelNameTimestamp == v) return;
@@ -4638,7 +4638,7 @@ Requirements:
   }
 
   // Display: token/context stats
-  bool _showTokenStats = true;
+  bool _showTokenStats = false;
   bool get showTokenStats => _showTokenStats;
   Future<void> setShowTokenStats(bool v) async {
     if (_showTokenStats == v) return;
@@ -6713,3 +6713,4 @@ class ProviderConfig {
         RegExp(r'kimi|moonshot|月之暗面').hasMatch(k);
   }
 }
+

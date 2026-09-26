@@ -1018,7 +1018,7 @@ class _HomePageState extends State<HomePage>
       loadingConversationIds: _controller.loadingConversationIds,
       title: title,
       providerName: providerName,
-      modelDisplay: modelDisplay,
+      modelDisplay: _resolvedChatModel().modelId ?? modelDisplay,
       onToggleDrawer: () => _drawerController.toggle(),
       onDismissKeyboard: _controller.dismissKeyboard,
       onSelectConversation: (id) {
@@ -1351,7 +1351,7 @@ class _HomePageState extends State<HomePage>
   }
 
   double _chatTopOverlayInset(BuildContext context) {
-    return kToolbarHeight + MediaQuery.paddingOf(context).top;
+    return 72 + MediaQuery.paddingOf(context).top;
   }
 
   Widget _buildMessageListView(
@@ -2236,3 +2236,4 @@ class _HomePageState extends State<HomePage>
     return result;
   }
 }
+

@@ -52,7 +52,7 @@ class ThemePalettes {
       onError: Color(0xFFFFFFFF),
       errorContainer: Color(0xFFFDDADE),
       onErrorContainer: Color(0xFF400013),
-      surface: Color(0xFFF7F7F7),
+      surface: Color(0xFFFFFFFF),
       onSurface: Color(0xFF202020),
       onSurfaceVariant: Color(0xFF646464),
       outline: Color(0x1A000000),
@@ -501,7 +501,7 @@ class ThemePalettes {
   static const ThemePalette monochrome = ThemePalette(
     id: monochromeId,
     zhName: '纸墨灰',
-    enName: 'Frost Gray',
+    enName: 'Paper & Ink',
     light: ColorScheme(
       brightness: Brightness.light,
       primary: Color(0xFF000000),
@@ -520,7 +520,7 @@ class ThemePalettes {
       onError: Color(0xFFFFFFFF),
       errorContainer: Color(0xFFEAEAEA),
       onErrorContainer: Color(0xFF000000),
-      surface: Color(0xFFF7F7F7),
+      surface: Color(0xFFFFFFFF),
       onSurface: Color(0xFF202020),
       onSurfaceVariant: Color(0xFF646464),
       outline: Color(0x1A000000),
@@ -587,7 +587,7 @@ class ThemePalettes {
       onError: Color(0xFFFFFFFF),
       errorContainer: Color(0x1AFF0000),
       onErrorContainer: Color(0xFFFF0000),
-      surface: Color(0xFFF7F7F7),
+      surface: Color(0xFFFFFFFF),
       onSurface: Color(0xFF202020),
       onSurfaceVariant: Color(0xFF646464),
       outline: Color(0x1A000000),
@@ -650,3 +650,4 @@ class ThemePalettes {
     return all.firstWhere((p) => p.id == id, orElse: () => defaultPalette);
   }
 }
+

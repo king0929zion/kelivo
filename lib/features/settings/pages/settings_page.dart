@@ -2,6 +2,9 @@ import 'package:flutter/foundation.dart' show defaultTargetPlatform;
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../scheduled_tasks/pages/scheduled_tasks_page.dart';
 import 'package:flutter/material.dart';
+import '../../../core/providers/user_provider.dart';
+import '../../../shared/widgets/flat_chrome.dart';
+import 'user_profile_page.dart';
 import '../../../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../../../icons/lucide_adapter.dart';
@@ -65,7 +68,7 @@ class SettingsPage extends StatelessWidget {
         context: context,
         backgroundColor: context.overlaySurface,
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(36)),
         ),
         builder: (ctx) {
           return SafeArea(
@@ -107,19 +110,25 @@ class SettingsPage extends StatelessWidget {
 
     // iOS-style section header (neutral color, not theme color)
     Widget header(String text, {bool first = false}) => Padding(
-      padding: EdgeInsets.fromLTRB(12, first ? 2 : 12, 12, 6),
+      padding: EdgeInsets.fromLTRB(14, first ? 16 : 22, 14, 12),
       child: Text(
         text,
         style: TextStyle(
           fontSize: 13,
           fontWeight: AppFontWeights.semibold,
-          color: cs.onSurface.withValues(alpha: 0.8),
+          color: cs.onSurface.withValues(alpha: 0.52),
         ),
       ),
     );
 
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 72,
+        backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+        flexibleSpace: const FlatHeaderWash(),
+        titleTextStyle: TextStyle(color: cs.onSurface, fontSize: 22,
+            fontWeight: AppFontWeights.semibold),
         leading: Tooltip(
           message: l10n.settingsPageBackButton,
           child: _TactileIconButton(
@@ -138,6 +147,29 @@ class SettingsPage extends StatelessWidget {
           onColorMode: pickThemeMode,
         ),
         children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 24, 20, 30),
+            child: Column(
+              children: [
+                CircleAvatar(
+                  radius: 44,
+                  backgroundColor: context.appColors.surfaceFill,
+                  child: Icon(Lucide.User, size: 38, color: cs.onSurface),
+                ),
+                const SizedBox(height: 16),
+                Text(context.watch<UserProvider>().name,
+                    style: TextStyle(fontSize: 28, color: cs.onSurface,
+                        fontWeight: AppFontWeights.semibold)),
+                const SizedBox(height: 12),
+                TextButton(
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const UserProfilePage()),
+                  ),
+                  child: Text(l10n.userProfilePageTitle),
+                ),
+              ],
+            ),
+          ),
           if (!settings.hasAnyActiveModel)
             Material(
               color: cs.errorContainer.withValues(alpha: 0.30),
@@ -520,13 +552,10 @@ class SettingsPage extends StatelessWidget {
 
 Widget _iosDivider(BuildContext context) {
   final cs = Theme.of(context).colorScheme;
-  // Restore previous visual: align with icon slot (36) + gap (12) + padding (12)
   return Divider(
-    height: 6,
-    thickness: 0.6,
-    indent: 54,
-    endIndent: 12,
-    color: cs.outlineVariant.withValues(alpha: 0.18),
+    height: 3,
+    thickness: 3,
+    color: cs.surface,
   );
 }
 
@@ -624,7 +653,7 @@ Widget _iosNavRow(
         base: baseColor,
         builder: (c) {
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
             child: Row(
               children: [
                 SizedBox(width: 36, child: Icon(icon, size: 20, color: c)),
@@ -633,7 +662,7 @@ Widget _iosNavRow(
                   child: Text(
                     label,
                     style: TextStyle(
-                      fontSize: 15,
+                      fontSize: 17,
                       color: c,
                       fontWeight: AppFontWeights.medium,
                     ),
@@ -819,3 +848,4 @@ Widget _sheetDivider(BuildContext context) {
     color: cs.outlineVariant.withValues(alpha: 0.18),
   );
 }
+
