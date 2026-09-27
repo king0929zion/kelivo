@@ -122,13 +122,17 @@ class SettingsPage extends StatelessWidget {
     );
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         toolbarHeight: 72,
         backgroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
         flexibleSpace: const FlatHeaderWash(),
-        titleTextStyle: TextStyle(color: cs.onSurface, fontSize: 22,
-            fontWeight: AppFontWeights.semibold),
+        titleTextStyle: TextStyle(
+          color: cs.onSurface,
+          fontSize: 22,
+          fontWeight: AppFontWeights.semibold,
+        ),
         leading: Tooltip(
           message: l10n.settingsPageBackButton,
           child: _TactileIconButton(
@@ -141,6 +145,7 @@ class SettingsPage extends StatelessWidget {
         title: Text(l10n.settingsPageTitle),
       ),
       body: SettingsSearchList(
+        topPadding: 72 + MediaQuery.paddingOf(context).top,
         onSearch: (origin) => showMobileSettingsSearch(
           context,
           origin: origin,
@@ -157,9 +162,14 @@ class SettingsPage extends StatelessWidget {
                   child: Icon(Lucide.User, size: 38, color: cs.onSurface),
                 ),
                 const SizedBox(height: 16),
-                Text(context.watch<UserProvider>().name,
-                    style: TextStyle(fontSize: 28, color: cs.onSurface,
-                        fontWeight: AppFontWeights.semibold)),
+                Text(
+                  context.watch<UserProvider?>()?.name ?? 'ZionChat',
+                  style: TextStyle(
+                    fontSize: 28,
+                    color: cs.onSurface,
+                    fontWeight: AppFontWeights.semibold,
+                  ),
+                ),
                 const SizedBox(height: 12),
                 TextButton(
                   onPressed: () => Navigator.of(context).push(
@@ -552,11 +562,7 @@ class SettingsPage extends StatelessWidget {
 
 Widget _iosDivider(BuildContext context) {
   final cs = Theme.of(context).colorScheme;
-  return Divider(
-    height: 3,
-    thickness: 3,
-    color: cs.surface,
-  );
+  return Divider(height: 3, thickness: 3, color: cs.surface);
 }
 
 // Shared color tween wrapper to mimic iOS gentle press color transition
@@ -848,4 +854,3 @@ Widget _sheetDivider(BuildContext context) {
     color: cs.outlineVariant.withValues(alpha: 0.18),
   );
 }
-

@@ -192,7 +192,6 @@ class HomeMobileScaffold extends StatelessWidget {
       ],
     );
   }
-
 }
 
 /// Mobile background widget with assistant-specific image and gradient overlay
@@ -203,7 +202,10 @@ class MobileBackgroundLayer extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     return ColoredBox(
-      color: Color.alphaBlend(cs.onSurface.withValues(alpha: 0.035), cs.surface),
+      color: Color.alphaBlend(
+        cs.onSurface.withValues(alpha: 0.035),
+        cs.surface,
+      ),
       child: const ChatAssistantBackground(),
     );
   }
@@ -482,4 +484,3 @@ class _GlassCircleButtonState extends State<_GlassCircleButton> {
     );
   }
 }
-

@@ -937,8 +937,11 @@ class _ModelSelectSheetState extends State<_ModelSelectSheet> {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             l10n.chatInputBarSelectModelTooltip,
-                            style: TextStyle(fontSize: 21, color: cs.onSurface,
-                                fontWeight: AppFontWeights.semibold),
+                            style: TextStyle(
+                              fontSize: 21,
+                              color: cs.onSurface,
+                              fontWeight: AppFontWeights.semibold,
+                            ),
                           ),
                         ),
                       ),
@@ -1192,7 +1195,8 @@ class _ModelSelectSheetState extends State<_ModelSelectSheet> {
                     row.item,
                     showProviderLabel: row.showProviderLabel,
                     first: index == 0 || _rows[index - 1] is! _ModelRow,
-                    last: index == _rows.length - 1 ||
+                    last:
+                        index == _rows.length - 1 ||
                         _rows[index + 1] is! _ModelRow,
                   );
                 }
@@ -1508,7 +1512,6 @@ class _ModelSelectSheetState extends State<_ModelSelectSheet> {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
-
                     ],
                   ),
                 ),
@@ -1521,15 +1524,15 @@ class _ModelSelectSheetState extends State<_ModelSelectSheet> {
                     final pinnedNow = context.select<SettingsProvider, bool>(
                       (s) => s.isModelPinned(m.providerKey, m.id),
                     );
-                    final icon = pinnedNow
-                        ? Lucide.Heart
-                        : Lucide.Heart;
+                    final icon = pinnedNow ? Lucide.Heart : Lucide.Heart;
                     return Tooltip(
                       message: l10n.modelSelectSheetFavoriteTooltip,
                       child: IosIconButton(
                         icon: icon,
                         size: 20,
-                        color: pinnedNow ? cs.onSurface : cs.onSurface.withValues(alpha: 0.28),
+                        color: pinnedNow
+                            ? cs.onSurface
+                            : cs.onSurface.withValues(alpha: 0.28),
                         onTap: () =>
                             settings.togglePinModel(m.providerKey, m.id),
                         padding: const EdgeInsets.all(6),
@@ -2611,4 +2614,3 @@ class _DesktopModelSelectDialogBodyState
 }
 
 // (desktop tactile row removed in favor of IosCardPress for consistency)
-

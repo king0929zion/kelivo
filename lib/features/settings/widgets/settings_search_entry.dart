@@ -43,10 +43,12 @@ class SettingsSearchList extends StatefulWidget {
     super.key,
     required this.onSearch,
     required this.children,
+    this.topPadding = 0,
   });
 
   final Future<void> Function(SettingsSearchOrigin origin) onSearch;
   final List<Widget> children;
+  final double topPadding;
 
   @override
   State<SettingsSearchList> createState() => _SettingsSearchListState();
@@ -108,6 +110,8 @@ class _SettingsSearchListState extends State<SettingsSearchList> {
         ),
       ),
       slivers: [
+        if (widget.topPadding > 0)
+          SliverToBoxAdapter(child: SizedBox(height: widget.topPadding)),
         SliverPersistentHeader(
           delegate: _SearchHeader(
             extent: _searchExtent,
@@ -190,3 +194,4 @@ class _SearchRevealPhysics extends ScrollPhysics {
     );
   }
 }
+

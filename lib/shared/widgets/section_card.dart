@@ -60,9 +60,7 @@ class SectionCard extends StatelessWidget {
     final resolvedRadius = radius ?? AppRadii.card;
     final resolvedPadding =
         padding ??
-        (child != null && children == null
-            ? EdgeInsets.zero
-            : EdgeInsets.zero);
+        (child != null && children == null ? EdgeInsets.zero : EdgeInsets.zero);
     final body = children != null
         ? Column(
             crossAxisAlignment: crossAxisAlignment,
@@ -91,4 +89,3 @@ class SectionCard extends StatelessWidget {
     );
   }
 }
-

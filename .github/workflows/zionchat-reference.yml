@@ -24,15 +24,16 @@ jobs:
           distribution: zulu
           java-version: '17'
           cache: gradle
+      - name: Cache development signing identity
+        uses: actions/cache@v4
+        with:
+          path: ~/.android/debug.keystore
+          key: zionchat-development-signing-v1
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.44.9'
           channel: stable
           cache: true
-      - name: Prepare optional fallback
-        run: |
-          mkdir -p lib/secrets
-          printf "const String siliconflowFallbackKey = '';\n" > lib/secrets/fallback.dart
       - name: Install dependencies
         run: flutter pub get
       - name: Generate localizations
@@ -48,17 +49,40 @@ jobs:
           path: formatting.patch
       - name: Analyze
         run: dart analyze --fatal-infos lib test integration_test
-      - name: Unit and widget tests
-        run: flutter test
+      - name: Focused UI regression tests
+        env:
+          CAPTURE_UI: 'true'
+        run: |
+          flutter test \
+            test/shared/widgets/ios_settings_rows_test.dart \
+            test/features/settings/pages/mobile_background_settings_page_test.dart \
+            test/features/settings/search/settings_search_motion_test.dart \
+            test/features/settings/search/settings_search_widgets_test.dart \
+            test/features/settings/pages/tool_schema_settings_entry_test.dart \
+            test/features/workspace/environment/environment_pane_test.dart \
+            test/features/workspace/environment/environment_presets_test.dart \
+            test/features/home/widgets/chat_input_section_skills_test.dart \
+            test/features/home/widgets/chat_input_bar_asr_test.dart \
+            test/features/home/widgets/chat_input_bar_queue_test.dart \
+            test/features/home/widgets/chat_input_bar_mobile_reference_test.dart
+      - name: Upload UI previews
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ZionChat-UI-previews
+          path: build/ui-previews/*.png
+          if-no-files-found: ignore
       - name: Build installable release APKs
         run: flutter build apk --release --split-per-abi
+      - name: Complete test suite
+        run: flutter test
       - name: Verify application ID and signing
         shell: bash
         run: |
           set -euo pipefail
           BUILD_TOOLS=$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)
           for apk in build/app/outputs/flutter-apk/*-release.apk; do
-            "$BUILD_TOOLS/aapt" dump badging "$apk" | head -1 > apk-package.txt
+            "$BUILD_TOOLS/aapt" dump badging "$apk" > apk-package.txt
             grep "name='com.king0929zion.zionchat'" apk-package.txt
             "$BUILD_TOOLS/apksigner" verify "$apk"
           done

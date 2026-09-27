@@ -650,4 +650,3 @@ class ThemePalettes {
     return all.firstWhere((p) => p.id == id, orElse: () => defaultPalette);
   }
 }
-

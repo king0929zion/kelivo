@@ -73,7 +73,8 @@ ColorScheme _withDerivedSurfaceContainers(
 
 DialogThemeData _dialogTheme(AppSemanticColors colors, ColorScheme scheme) {
   return DialogThemeData(
-    backgroundColor: colors.overlaySurface(scheme), elevation: 0,
+    backgroundColor: colors.overlaySurface(scheme),
+    elevation: 0,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
   );
 }
@@ -85,6 +86,10 @@ BottomSheetThemeData _bottomSheetTheme(
   return BottomSheetThemeData(
     backgroundColor: colors.overlaySurface(scheme),
     surfaceTintColor: Colors.transparent,
+    elevation: 0,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(36)),
+    ),
   );
 }
 
@@ -93,7 +98,8 @@ PopupMenuThemeData _popupMenuTheme(
   ColorScheme scheme,
 ) {
   return PopupMenuThemeData(
-    color: colors.overlaySurface(scheme), elevation: 0,
+    color: colors.overlaySurface(scheme),
+    elevation: 0,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
   );
 }
@@ -598,4 +604,3 @@ ThemeData buildDarkThemeForScheme(
     canvasColor: scheme.surface,
   );
 }
-

@@ -6713,4 +6713,3 @@ class ProviderConfig {
         RegExp(r'kimi|moonshot|月之暗面').hasMatch(k);
   }
 }
-

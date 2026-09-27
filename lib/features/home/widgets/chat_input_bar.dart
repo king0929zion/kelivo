@@ -1794,26 +1794,25 @@ class _ChatInputBarState extends State<ChatInputBar>
         final List<_OverflowAction> actions = [];
 
         // Phones select the model from the header capsule.
-        if (MediaQuery.sizeOf(context).width >= AppBreakpoints.tablet) {
-        actions.add(
-          _OverflowAction(
-            width: (widget.modelIcon != null) ? modelButtonW : normalButtonW,
-            builder: () => _CompactIconButton(
-              tooltip: l10n.chatInputBarSelectModelTooltip,
-              icon: Lucide.Boxes,
-              modelIcon: true,
-              onTap: lockTap(widget.onSelectModel),
-              onLongPress: lockTap(widget.onLongPressSelectModel),
-              child: widget.modelIcon,
+        if (MediaQuery.sizeOf(context).width >= AppBreakpoints.mobile) {
+          actions.add(
+            _OverflowAction(
+              width: (widget.modelIcon != null) ? modelButtonW : normalButtonW,
+              builder: () => _CompactIconButton(
+                tooltip: l10n.chatInputBarSelectModelTooltip,
+                icon: Lucide.Boxes,
+                modelIcon: true,
+                onTap: lockTap(widget.onSelectModel),
+                onLongPress: lockTap(widget.onLongPressSelectModel),
+                child: widget.modelIcon,
+              ),
+              menu: DesktopContextMenuItem(
+                icon: Lucide.Boxes,
+                label: l10n.chatInputBarSelectModelTooltip,
+                onTap: lockTap(widget.onSelectModel),
+              ),
             ),
-            menu: DesktopContextMenuItem(
-              icon: Lucide.Boxes,
-              label: l10n.chatInputBarSelectModelTooltip,
-              onTap: lockTap(widget.onSelectModel),
-            ),
-          ),
-        );
-
+          );
         }
 
         // Search button (stateful icon depending on provider config)
@@ -2588,7 +2587,7 @@ class _ChatInputBarState extends State<ChatInputBar>
     _supportsImagesApiRouting(context);
     final size = MediaQuery.sizeOf(context);
     final viewInsets = MediaQuery.viewInsetsOf(context);
-    final bool isMobileLayout = size.width < AppBreakpoints.tablet;
+    final bool isMobileLayout = size.width < AppBreakpoints.mobile;
     final double visibleHeight = size.height - viewInsets.bottom;
     final double attachmentPreviewHeight = (hasDocs || hasImages)
         ? AppSpacing.sm +
@@ -2615,285 +2614,244 @@ class _ChatInputBarState extends State<ChatInputBar>
         : const BoxConstraints();
 
     final editor = Stack(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(
-                                  AppSpacing.md,
-                                  AppSpacing.xxs,
-                                  AppSpacing.md,
-                                  AppSpacing.xs,
-                                ),
-                                child: ConstrainedBox(
-                                  constraints: textFieldConstraints,
-                                  child: Focus(
-                                    onKeyEvent: _handleKeyEvent,
-                                    child: Builder(
-                                      builder: (ctx) {
-                                        // Desktop: show a right-click context menu with paste/cut/copy/select all
-                                        // Future<void> _showDesktopContextMenu(Offset globalPos) async {
-                                        //   bool isDesktop = false;
-                                        //   try { isDesktop = Platform.isMacOS || Platform.isWindows || Platform.isLinux; } catch (_) {}
-                                        //   if (!isDesktop) return;
-                                        //   // Ensure input has focus so operations apply correctly
-                                        //   try { widget.focusNode?.requestFocus(); } catch (_) {}
-                                        //
-                                        //   final sel = _controller.selection;
-                                        //   final hasSelection = sel.isValid && !sel.isCollapsed;
-                                        //   final hasText = _controller.text.isNotEmpty;
-                                        //
-                                        //   final l10n = MaterialLocalizations.of(ctx);
-                                        //   await showDesktopContextMenuAt(
-                                        //     ctx,
-                                        //     globalPosition: globalPos,
-                                        //     items: [
-                                        //       DesktopContextMenuItem(
-                                        //         icon: Lucide.Clipboard,
-                                        //         label: l10n.pasteButtonLabel,
-                                        //         onTap: () async {
-                                        //           await _handlePasteFromClipboard();
-                                        //         },
-                                        //       ),
-                                        //       DesktopContextMenuItem(
-                                        //         icon: Lucide.Cut,
-                                        //         label: l10n.cutButtonLabel,
-                                        //         onTap: () async {
-                                        //           final s = _controller.selection;
-                                        //           if (s.isValid && !s.isCollapsed) {
-                                        //             final text = _controller.text.substring(s.start, s.end);
-                                        //             try { await Clipboard.setData(ClipboardData(text: text)); } catch (_) {}
-                                        //             final newText = _controller.text.replaceRange(s.start, s.end, '');
-                                        //             _controller.value = TextEditingValue(
-                                        //               text: newText,
-                                        //               selection: TextSelection.collapsed(offset: s.start),
-                                        //             );
-                                        //             setState(() {});
-                                        //           }
-                                        //         },
-                                        //       ),
-                                        //       DesktopContextMenuItem(
-                                        //         icon: Lucide.Copy,
-                                        //         label: l10n.copyButtonLabel,
-                                        //         onTap: () async {
-                                        //           final s2 = _controller.selection;
-                                        //           if (s2.isValid && !s2.isCollapsed) {
-                                        //             final text = _controller.text.substring(s2.start, s2.end);
-                                        //             try { await Clipboard.setData(ClipboardData(text: text)); } catch (_) {}
-                                        //           }
-                                        //         },
-                                        //       ),
-                                        //       // DesktopContextMenuItem(
-                                        //       //   // icon: Lucide.TextSelect,
-                                        //       //   label: l10n.selectAllButtonLabel,
-                                        //       //   onTap: () {
-                                        //       //     if (hasText) {
-                                        //       //       _controller.selection = TextSelection(baseOffset: 0, extentOffset: _controller.text.length);
-                                        //       //       setState(() {});
-                                        //       //     }
-                                        //       //   },
-                                        //       // ),
-                                        //     ],
-                                        //   );
-                                        // }
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.md,
+            AppSpacing.xxs,
+            AppSpacing.md,
+            AppSpacing.xs,
+          ),
+          child: ConstrainedBox(
+            constraints: textFieldConstraints,
+            child: Focus(
+              onKeyEvent: _handleKeyEvent,
+              child: Builder(
+                builder: (ctx) {
+                  // Desktop: show a right-click context menu with paste/cut/copy/select all
+                  // Future<void> _showDesktopContextMenu(Offset globalPos) async {
+                  //   bool isDesktop = false;
+                  //   try { isDesktop = Platform.isMacOS || Platform.isWindows || Platform.isLinux; } catch (_) {}
+                  //   if (!isDesktop) return;
+                  //   // Ensure input has focus so operations apply correctly
+                  //   try { widget.focusNode?.requestFocus(); } catch (_) {}
+                  //
+                  //   final sel = _controller.selection;
+                  //   final hasSelection = sel.isValid && !sel.isCollapsed;
+                  //   final hasText = _controller.text.isNotEmpty;
+                  //
+                  //   final l10n = MaterialLocalizations.of(ctx);
+                  //   await showDesktopContextMenuAt(
+                  //     ctx,
+                  //     globalPosition: globalPos,
+                  //     items: [
+                  //       DesktopContextMenuItem(
+                  //         icon: Lucide.Clipboard,
+                  //         label: l10n.pasteButtonLabel,
+                  //         onTap: () async {
+                  //           await _handlePasteFromClipboard();
+                  //         },
+                  //       ),
+                  //       DesktopContextMenuItem(
+                  //         icon: Lucide.Cut,
+                  //         label: l10n.cutButtonLabel,
+                  //         onTap: () async {
+                  //           final s = _controller.selection;
+                  //           if (s.isValid && !s.isCollapsed) {
+                  //             final text = _controller.text.substring(s.start, s.end);
+                  //             try { await Clipboard.setData(ClipboardData(text: text)); } catch (_) {}
+                  //             final newText = _controller.text.replaceRange(s.start, s.end, '');
+                  //             _controller.value = TextEditingValue(
+                  //               text: newText,
+                  //               selection: TextSelection.collapsed(offset: s.start),
+                  //             );
+                  //             setState(() {});
+                  //           }
+                  //         },
+                  //       ),
+                  //       DesktopContextMenuItem(
+                  //         icon: Lucide.Copy,
+                  //         label: l10n.copyButtonLabel,
+                  //         onTap: () async {
+                  //           final s2 = _controller.selection;
+                  //           if (s2.isValid && !s2.isCollapsed) {
+                  //             final text = _controller.text.substring(s2.start, s2.end);
+                  //             try { await Clipboard.setData(ClipboardData(text: text)); } catch (_) {}
+                  //           }
+                  //         },
+                  //       ),
+                  //       // DesktopContextMenuItem(
+                  //       //   // icon: Lucide.TextSelect,
+                  //       //   label: l10n.selectAllButtonLabel,
+                  //       //   onTap: () {
+                  //       //     if (hasText) {
+                  //       //       _controller.selection = TextSelection(baseOffset: 0, extentOffset: _controller.text.length);
+                  //       //       setState(() {});
+                  //       //     }
+                  //       //   },
+                  //       // ),
+                  //     ],
+                  //   );
+                  // }
 
-                                        final enterToSend = context
-                                            .watch<SettingsProvider>()
-                                            .enterToSendOnMobile;
-                                        return GestureDetector(
-                                          behavior:
-                                              HitTestBehavior.deferToChild,
-                                          // onSecondaryTapDown: (details) {
-                                          //   // _showDesktopContextMenu(details.globalPosition);
-                                          // },
-                                          child: TextField(
-                                            controller: _controller,
-                                            focusNode: widget.focusNode,
-                                            onChanged: _onTextChanged,
-                                            contentInsertionConfiguration:
-                                                ContentInsertionConfiguration(
-                                                  onContentInserted:
-                                                      _handleInsertedContent,
-                                                  allowedMimeTypes: const [
-                                                    'image/png',
-                                                    'image/jpeg',
-                                                    'image/jpg',
-                                                    'image/gif',
-                                                    'image/webp',
-                                                  ],
-                                                ),
-                                            readOnly:
-                                                _composerLocked ||
-                                                _ownsVoiceSession,
-                                            minLines: 1,
-                                            maxLines: _isExpanded ? 25 : 5,
-                                            // On mobile, optionally show "Send" on the return key and submit on tap.
-                                            // Still keep multiline so pasted text preserves line breaks.
-                                            keyboardType:
-                                                TextInputType.multiline,
-                                            textInputAction: enterToSend
-                                                ? TextInputAction.send
-                                                : TextInputAction.newline,
-                                            onSubmitted: enterToSend
-                                                ? (_) =>
-                                                      unawaited(_handleSend())
-                                                : null,
-                                            // Custom context menu: use instance method to avoid flickering
-                                            // caused by recreating the callback on every build.
-                                            // See: https://github.com/flutter/flutter/issues/150551
-                                            contextMenuBuilder:
-                                                _buildContextMenu,
-                                            autofocus: false,
-                                            decoration: InputDecoration(
-                                              hintText: _hint(context),
-                                              hintStyle: TextStyle(
-                                                color: theme
-                                                    .colorScheme
-                                                    .onSurface
-                                                    .withValues(alpha: 0.45),
-                                              ),
-                                              border: InputBorder.none,
-                                              enabledBorder: InputBorder.none,
-                                              focusedBorder: InputBorder.none,
-                                              filled: false,
-                                              contentPadding:
-                                                  const EdgeInsets.symmetric(
-                                                    vertical: 2,
-                                                  ),
-                                            ),
-                                            style: TextStyle(
-                                              color:
-                                                  theme.colorScheme.onSurface,
-                                              fontSize:
-                                                  (Platform.isWindows ||
-                                                      Platform.isLinux ||
-                                                      Platform.isMacOS)
-                                                  ? 14
-                                                  : 15,
-                                            ),
-                                            cursorColor:
-                                                theme.colorScheme.primary,
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              // Expand/Collapse icon button (only shown when 3+ lines)
-                              if (_showExpandButton)
-                                Positioned(
-                                  top: 10,
-                                  right: 12,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      setState(
-                                        () => _isExpanded = !_isExpanded,
-                                      );
-                                      _ensureCaretVisible();
-                                    },
-                                    child: Icon(
-                                      _isExpanded
-                                          ? Lucide.ChevronsDownUp
-                                          : Lucide.ChevronsUpDown,
-                                      size: 16,
-                                      color: theme.colorScheme.onSurface
-                                          .withValues(alpha: 0.45),
-                                    ),
-                                  ),
-                                ),
+                  final enterToSend = context
+                      .watch<SettingsProvider>()
+                      .enterToSendOnMobile;
+                  return GestureDetector(
+                    behavior: HitTestBehavior.deferToChild,
+                    // onSecondaryTapDown: (details) {
+                    //   // _showDesktopContextMenu(details.globalPosition);
+                    // },
+                    child: TextField(
+                      controller: _controller,
+                      focusNode: widget.focusNode,
+                      onChanged: _onTextChanged,
+                      contentInsertionConfiguration:
+                          ContentInsertionConfiguration(
+                            onContentInserted: _handleInsertedContent,
+                            allowedMimeTypes: const [
+                              'image/png',
+                              'image/jpeg',
+                              'image/jpg',
+                              'image/gif',
+                              'image/webp',
                             ],
-                          );
+                          ),
+                      readOnly: _composerLocked || _ownsVoiceSession,
+                      minLines: 1,
+                      maxLines: _isExpanded ? 25 : 5,
+                      // On mobile, optionally show "Send" on the return key and submit on tap.
+                      // Still keep multiline so pasted text preserves line breaks.
+                      keyboardType: TextInputType.multiline,
+                      textInputAction: enterToSend
+                          ? TextInputAction.send
+                          : TextInputAction.newline,
+                      onSubmitted: enterToSend
+                          ? (_) => unawaited(_handleSend())
+                          : null,
+                      // Custom context menu: use instance method to avoid flickering
+                      // caused by recreating the callback on every build.
+                      // See: https://github.com/flutter/flutter/issues/150551
+                      contextMenuBuilder: _buildContextMenu,
+                      autofocus: false,
+                      decoration: InputDecoration(
+                        hintText: _hint(context),
+                        hintStyle: TextStyle(
+                          color: theme.colorScheme.onSurface.withValues(
+                            alpha: 0.45,
+                          ),
+                        ),
+                        border: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        filled: false,
+                        contentPadding: const EdgeInsets.symmetric(vertical: 2),
+                      ),
+                      style: TextStyle(
+                        color: theme.colorScheme.onSurface,
+                        fontSize:
+                            (Platform.isWindows ||
+                                Platform.isLinux ||
+                                Platform.isMacOS)
+                            ? 14
+                            : 15,
+                      ),
+                      cursorColor: theme.colorScheme.primary,
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+        // Expand/Collapse icon button (only shown when 3+ lines)
+        if (_showExpandButton)
+          Positioned(
+            top: 10,
+            right: 12,
+            child: GestureDetector(
+              onTap: () {
+                setState(() => _isExpanded = !_isExpanded);
+                _ensureCaretVisible();
+              },
+              child: Icon(
+                _isExpanded ? Lucide.ChevronsDownUp : Lucide.ChevronsUpDown,
+                size: 16,
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.45),
+              ),
+            ),
+          ),
+      ],
+    );
     final importAndAttachments = Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-                          if (widget.mediaController != null) ...[
-                            ValueListenableBuilder<ShareImportProgress?>(
-                              valueListenable:
-                                  widget.mediaController!.shareImport,
-                              builder: (context, progress, _) =>
-                                  progress == null
-                                  ? const SizedBox.shrink()
-                                  : ComposerImportProgress(
-                                      progress: progress,
-                                      onCancel: () => widget
-                                          .mediaController!
-                                          .cancelShareImport
-                                          ?.call(),
-                                    ),
+        if (widget.mediaController != null) ...[
+          ValueListenableBuilder<ShareImportProgress?>(
+            valueListenable: widget.mediaController!.shareImport,
+            builder: (context, progress, _) => progress == null
+                ? const SizedBox.shrink()
+                : ComposerImportProgress(
+                    progress: progress,
+                    onCancel: () =>
+                        widget.mediaController!.cancelShareImport?.call(),
+                  ),
+          ),
+          if (isMobileLayout && (hasText || hasDocs || hasImages))
+            ValueListenableBuilder<VoidCallback?>(
+              valueListenable: widget.mediaController!.sharedDraftAction,
+              builder: (context, onMove, _) => onMove == null
+                  ? const SizedBox.shrink()
+                  : Padding(
+                      padding: const EdgeInsets.fromLTRB(12, 8, 8, 0),
+                      child: Row(
+                        children: [
+                          Text(
+                            AppLocalizations.of(context)!.incomingShareTitle,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: theme.colorScheme.onSurfaceVariant,
                             ),
-                            if (isMobileLayout &&
-                                (hasText || hasDocs || hasImages))
-                              ValueListenableBuilder<VoidCallback?>(
-                                valueListenable:
-                                    widget.mediaController!.sharedDraftAction,
-                                builder: (context, onMove, _) => onMove == null
-                                    ? const SizedBox.shrink()
-                                    : Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                          12,
-                                          8,
-                                          8,
-                                          0,
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              AppLocalizations.of(
-                                                context,
-                                              )!.incomingShareTitle,
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                color: theme
-                                                    .colorScheme
-                                                    .onSurfaceVariant,
-                                              ),
-                                            ),
-                                            const Spacer(),
-                                            IosCardPress(
-                                              onTap: onMove,
-                                              haptics: false,
-                                              baseColor: Colors.transparent,
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                    horizontal: 8,
-                                                    vertical: 6,
-                                                  ),
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Text(
-                                                    AppLocalizations.of(
-                                                      context,
-                                                    )!.incomingShareMoveTo,
-                                                    style: TextStyle(
-                                                      fontSize: 12,
-                                                      color: theme
-                                                          .colorScheme
-                                                          .primary,
-                                                      fontWeight:
-                                                          AppFontWeights.medium,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(width: 4),
-                                                  Icon(
-                                                    Lucide.ArrowRight,
-                                                    size: 14,
-                                                    color: theme
-                                                        .colorScheme
-                                                        .primary,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                              ),
-                          ],
-                          if (hasDocs || hasImages)
-                            _buildInlineAttachmentPreviews(context, isDark),
-
+                          ),
+                          const Spacer(),
+                          IosCardPress(
+                            onTap: onMove,
+                            haptics: false,
+                            baseColor: Colors.transparent,
+                            borderRadius: BorderRadius.circular(8),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 6,
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.incomingShareMoveTo,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: theme.colorScheme.primary,
+                                    fontWeight: AppFontWeights.medium,
+                                  ),
+                                ),
+                                const SizedBox(width: 4),
+                                Icon(
+                                  Lucide.ArrowRight,
+                                  size: 14,
+                                  color: theme.colorScheme.primary,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+            ),
+        ],
+        if (hasDocs || hasImages)
+          _buildInlineAttachmentPreviews(context, isDark),
       ],
     );
     if (isMobileLayout) {
@@ -2936,9 +2894,11 @@ class _ChatInputBarState extends State<ChatInputBar>
                     FlatIconButton(
                       icon: _mobileToolsOpen ? Lucide.X : Lucide.Image,
                       label: l10n.chatInputBarMoreTooltip,
-                      onTap: _composerLocked ? null : () => setState(() {
-                        _mobileToolsOpen = !_mobileToolsOpen;
-                      }),
+                      onTap: _composerLocked
+                          ? null
+                          : () => setState(() {
+                              _mobileToolsOpen = !_mobileToolsOpen;
+                            }),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -2951,15 +2911,22 @@ class _ChatInputBarState extends State<ChatInputBar>
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Expanded(child: Padding(
-                              padding: const EdgeInsets.only(top: 8, bottom: 4),
-                              child: editor,
-                            )),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                  top: 8,
+                                  bottom: 4,
+                                ),
+                                child: editor,
+                              ),
+                            ),
                             Padding(
                               padding: const EdgeInsets.all(4),
                               child: _CompactSendButton(
-                                enabled: (hasText || hasImages || hasDocs) &&
-                                    !_hasUnreadyImages && !widget.loading &&
+                                enabled:
+                                    (hasText || hasImages || hasDocs) &&
+                                    !_hasUnreadyImages &&
+                                    !widget.loading &&
                                     !_composerLocked,
                                 loading: widget.loading,
                                 onSend: _handleSend,
@@ -2993,7 +2960,8 @@ class _ChatInputBarState extends State<ChatInputBar>
                             tooltip: l10n.chatInputBarVoiceInputTooltip,
                             icon: Lucide.Mic,
                             onTap: _composerLocked || widget.loading
-                                ? null : () => unawaited(_startVoiceInput()),
+                                ? null
+                                : () => unawaited(_startVoiceInput()),
                           ),
                         if (widget.showMoreButton)
                           _CompactIconButton(
@@ -3701,4 +3669,3 @@ class _VoiceWaveformPainter extends CustomPainter {
   @override
   bool shouldRepaint(_VoiceWaveformPainter oldDelegate) => true;
 }
-
