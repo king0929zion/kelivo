@@ -101,29 +101,30 @@ class _SettingsSearchListState extends State<SettingsSearchList> {
   Widget build(BuildContext context) => SafeArea(
     top: false,
     bottom: false,
-    child: CustomScrollView(
-      controller: _controller,
-      physics: _SearchRevealPhysics(
-        extent: _searchExtent,
-        parent: const BouncingScrollPhysics(
-          parent: AlwaysScrollableScrollPhysics(),
-        ),
-      ),
-      slivers: [
-        if (widget.topPadding > 0)
-          SliverToBoxAdapter(child: SizedBox(height: widget.topPadding)),
-        SliverPersistentHeader(
-          delegate: _SearchHeader(
-            extent: _searchExtent,
-            entryKey: _entryKey,
-            onTap: _openSearch,
+    child: Padding(
+      padding: EdgeInsets.only(top: widget.topPadding),
+      child: CustomScrollView(
+        controller: _controller,
+        physics: _SearchRevealPhysics(
+          extent: _searchExtent,
+          parent: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
           ),
         ),
-        SliverPadding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-          sliver: SliverList.list(children: widget.children),
-        ),
-      ],
+        slivers: [
+          SliverPersistentHeader(
+            delegate: _SearchHeader(
+              extent: _searchExtent,
+              entryKey: _entryKey,
+              onTap: _openSearch,
+            ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+            sliver: SliverList.list(children: widget.children),
+          ),
+        ],
+      ),
     ),
   );
 }
@@ -194,4 +195,3 @@ class _SearchRevealPhysics extends ScrollPhysics {
     );
   }
 }
-

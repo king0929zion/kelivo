@@ -291,4 +291,3 @@ class _BottomOverlayFade extends StatelessWidget {
     );
   }
 }
-

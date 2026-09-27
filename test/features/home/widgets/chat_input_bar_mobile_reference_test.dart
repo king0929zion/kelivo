@@ -21,11 +21,15 @@ void main() {
     final font = File('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf');
     if (await font.exists()) {
       final loader = FontLoader('Roboto');
-      loader.addFont(Future.value(ByteData.sublistView(await font.readAsBytes())));
+      loader.addFont(
+        Future.value(ByteData.sublistView(await font.readAsBytes())),
+      );
       await loader.load();
     }
     final icons = FontLoader('packages/lucide_icons_flutter/Lucide');
-    icons.addFont(rootBundle.load('packages/lucide_icons_flutter/assets/lucide.ttf'));
+    icons.addFont(
+      rootBundle.load('packages/lucide_icons_flutter/assets/lucide.ttf'),
+    );
     await icons.load();
   });
   testWidgets('phone composer sends text and exposes attachment actions', (
@@ -59,19 +63,19 @@ void main() {
             key: previewKey,
             child: Scaffold(
               backgroundColor: const Color(0xFFF6F6F6),
-            body: Align(
-              alignment: Alignment.bottomCenter,
-              child: ChatInputBar(
-                controller: controller,
-                sendButtonTooltip: 'Send test message',
-                onMore: () => attachmentTaps++,
-                onSend: (_) async {
-                  sends++;
-                  return ChatInputSubmissionResult.rejected;
-                },
+              body: Align(
+                alignment: Alignment.bottomCenter,
+                child: ChatInputBar(
+                  controller: controller,
+                  sendButtonTooltip: 'Send test message',
+                  onMore: () => attachmentTaps++,
+                  onSend: (_) async {
+                    sends++;
+                    return ChatInputSubmissionResult.rejected;
+                  },
+                ),
               ),
             ),
-          ),
           ),
         ),
       ),
@@ -79,8 +83,9 @@ void main() {
     await tester.pump();
     if (Platform.environment['CAPTURE_UI'] == 'true') {
       await tester.runAsync(() async {
-        final boundary = previewKey.currentContext!.findRenderObject()
-            as RenderRepaintBoundary;
+        final boundary =
+            previewKey.currentContext!.findRenderObject()
+                as RenderRepaintBoundary;
         final image = await boundary.toImage(pixelRatio: 2);
         final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
         final file = File('build/ui-previews/composer-light.png');
