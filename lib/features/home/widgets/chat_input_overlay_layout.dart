@@ -270,7 +270,10 @@ class _BottomOverlayFade extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final surface = theme.colorScheme.surface;
+    final surface = Color.alphaBlend(
+      theme.colorScheme.onSurface.withValues(alpha: 0.035),
+      theme.colorScheme.surface,
+    );
     final gradient = LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,

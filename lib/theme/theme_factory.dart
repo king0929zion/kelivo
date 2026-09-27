@@ -72,7 +72,11 @@ ColorScheme _withDerivedSurfaceContainers(
 }
 
 DialogThemeData _dialogTheme(AppSemanticColors colors, ColorScheme scheme) {
-  return DialogThemeData(backgroundColor: colors.overlaySurface(scheme));
+  return DialogThemeData(
+    backgroundColor: colors.overlaySurface(scheme),
+    elevation: 0,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+  );
 }
 
 BottomSheetThemeData _bottomSheetTheme(
@@ -82,6 +86,10 @@ BottomSheetThemeData _bottomSheetTheme(
   return BottomSheetThemeData(
     backgroundColor: colors.overlaySurface(scheme),
     surfaceTintColor: Colors.transparent,
+    elevation: 0,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(36)),
+    ),
   );
 }
 
@@ -89,7 +97,11 @@ PopupMenuThemeData _popupMenuTheme(
   AppSemanticColors colors,
   ColorScheme scheme,
 ) {
-  return PopupMenuThemeData(color: colors.overlaySurface(scheme));
+  return PopupMenuThemeData(
+    color: colors.overlaySurface(scheme),
+    elevation: 0,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+  );
 }
 
 TextTheme _withFontFallback(TextTheme base, List<String> fallback) {
@@ -223,6 +235,27 @@ ThemeData buildLightTheme(ColorScheme? dynamicScheme) {
 
   final theme = ThemeData(
     useMaterial3: true,
+    splashFactory: NoSplash.splashFactory,
+    cardTheme: CardThemeData(
+      elevation: 0,
+      margin: EdgeInsets.zero,
+      color: colors.surfaceFill,
+      surfaceTintColor: Colors.transparent,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: colors.surfaceFill,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(28),
+        borderSide: BorderSide.none,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(28),
+        borderSide: BorderSide.none,
+      ),
+    ),
     colorScheme: scheme,
     scaffoldBackgroundColor: scheme.surface,
     extensions: <ThemeExtension<dynamic>>[colors],
@@ -239,7 +272,7 @@ ThemeData buildLightTheme(ColorScheme? dynamicScheme) {
         fontFamilyFallback: fontFallback,
       ),
       elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       actionTextColor: scheme.primary,
       disabledActionTextColor: scheme.onInverseSurface.withValues(alpha: 0.5),
     ),
@@ -300,6 +333,27 @@ ThemeData buildLightThemeForScheme(
   final colors = AppSemanticColors.light(scheme, layered: layeredSurfaces);
   final theme = ThemeData(
     useMaterial3: true,
+    splashFactory: NoSplash.splashFactory,
+    cardTheme: CardThemeData(
+      elevation: 0,
+      margin: EdgeInsets.zero,
+      color: colors.surfaceFill,
+      surfaceTintColor: Colors.transparent,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: colors.surfaceFill,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(28),
+        borderSide: BorderSide.none,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(28),
+        borderSide: BorderSide.none,
+      ),
+    ),
     colorScheme: scheme,
     scaffoldBackgroundColor: scheme.surface,
     extensions: <ThemeExtension<dynamic>>[colors],
@@ -313,7 +367,7 @@ ThemeData buildLightThemeForScheme(
         fontFamilyFallback: fontFallback,
       ),
       elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       actionTextColor: scheme.primary,
       disabledActionTextColor: scheme.onInverseSurface.withValues(alpha: 0.5),
     ),
@@ -391,6 +445,27 @@ ThemeData buildDarkTheme(ColorScheme? dynamicScheme) {
 
   final theme = ThemeData(
     useMaterial3: true,
+    splashFactory: NoSplash.splashFactory,
+    cardTheme: CardThemeData(
+      elevation: 0,
+      margin: EdgeInsets.zero,
+      color: colors.surfaceFill,
+      surfaceTintColor: Colors.transparent,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: colors.surfaceFill,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(28),
+        borderSide: BorderSide.none,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(28),
+        borderSide: BorderSide.none,
+      ),
+    ),
     colorScheme: scheme,
     scaffoldBackgroundColor: scheme.surface,
     extensions: <ThemeExtension<dynamic>>[colors],
@@ -407,7 +482,7 @@ ThemeData buildDarkTheme(ColorScheme? dynamicScheme) {
         fontFamilyFallback: fontFallback,
       ),
       elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       actionTextColor: scheme.primary,
       disabledActionTextColor: scheme.onInverseSurface.withValues(alpha: 0.6),
     ),
@@ -461,6 +536,27 @@ ThemeData buildDarkThemeForScheme(
   final colors = AppSemanticColors.dark(scheme, layered: layeredSurfaces);
   final theme = ThemeData(
     useMaterial3: true,
+    splashFactory: NoSplash.splashFactory,
+    cardTheme: CardThemeData(
+      elevation: 0,
+      margin: EdgeInsets.zero,
+      color: colors.surfaceFill,
+      surfaceTintColor: Colors.transparent,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: colors.surfaceFill,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(28),
+        borderSide: BorderSide.none,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(28),
+        borderSide: BorderSide.none,
+      ),
+    ),
     colorScheme: scheme,
     scaffoldBackgroundColor: scheme.surface,
     extensions: <ThemeExtension<dynamic>>[colors],
@@ -474,7 +570,7 @@ ThemeData buildDarkThemeForScheme(
         fontFamilyFallback: fontFallback,
       ),
       elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       actionTextColor: scheme.primary,
       disabledActionTextColor: scheme.onInverseSurface.withValues(alpha: 0.6),
     ),

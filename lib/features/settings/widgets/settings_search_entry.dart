@@ -43,10 +43,12 @@ class SettingsSearchList extends StatefulWidget {
     super.key,
     required this.onSearch,
     required this.children,
+    this.topPadding = 0,
   });
 
   final Future<void> Function(SettingsSearchOrigin origin) onSearch;
   final List<Widget> children;
+  final double topPadding;
 
   @override
   State<SettingsSearchList> createState() => _SettingsSearchListState();
@@ -99,27 +101,30 @@ class _SettingsSearchListState extends State<SettingsSearchList> {
   Widget build(BuildContext context) => SafeArea(
     top: false,
     bottom: false,
-    child: CustomScrollView(
-      controller: _controller,
-      physics: _SearchRevealPhysics(
-        extent: _searchExtent,
-        parent: const BouncingScrollPhysics(
-          parent: AlwaysScrollableScrollPhysics(),
-        ),
-      ),
-      slivers: [
-        SliverPersistentHeader(
-          delegate: _SearchHeader(
-            extent: _searchExtent,
-            entryKey: _entryKey,
-            onTap: _openSearch,
+    child: Padding(
+      padding: EdgeInsets.only(top: widget.topPadding),
+      child: CustomScrollView(
+        controller: _controller,
+        physics: _SearchRevealPhysics(
+          extent: _searchExtent,
+          parent: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
           ),
         ),
-        SliverPadding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-          sliver: SliverList.list(children: widget.children),
-        ),
-      ],
+        slivers: [
+          SliverPersistentHeader(
+            delegate: _SearchHeader(
+              extent: _searchExtent,
+              entryKey: _entryKey,
+              onTap: _openSearch,
+            ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+            sliver: SliverList.list(children: widget.children),
+          ),
+        ],
+      ),
     ),
   );
 }

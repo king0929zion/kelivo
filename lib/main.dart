@@ -492,7 +492,7 @@ class _RestoreProgressApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final palette = ThemePalettes.defaultPalette;
+    final palette = ThemePalettes.monochrome;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Kelivo',
@@ -518,7 +518,7 @@ class _RestoreFailureApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final palette = ThemePalettes.defaultPalette;
+    final palette = ThemePalettes.monochrome;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Kelivo',
@@ -619,7 +619,7 @@ class MigrationApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final palette = ThemePalettes.defaultPalette;
+    final palette = ThemePalettes.monochrome;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Kelivo',
